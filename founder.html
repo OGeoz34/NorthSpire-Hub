@@ -196,6 +196,12 @@ section{ margin-top:120px; }
 }
 .principle .v{ color:var(--muted); font-size:15px; }
 
+/* On narrow phones, stack label over description so text gets full width */
+@media (max-width:600px){
+  .principle{ grid-template-columns:1fr; gap:8px; }
+  .principle .k{ white-space:normal; font-size:16px; }
+}
+
 /* ==========================================================================
    SECTION 4 — PHILOSOPHY  (interactive cards)
    ========================================================================== */
@@ -252,6 +258,12 @@ section{ margin-top:120px; }
   color:var(--faint); border:1px solid var(--border-lit); border-radius:20px; padding:4px 10px;
 }
 .eco-card .status.live{ color:var(--accent); border-color:rgba(163,196,220,.3); }
+
+/* Very narrow phones: let the status pill drop under the text instead of crowding */
+@media (max-width:420px){
+  .eco-card{ flex-wrap:wrap; }
+  .eco-card .status{ margin-left:62px; }
+}
 
 /* ==========================================================================
    SECTION 6 — TIMELINE
