@@ -307,17 +307,22 @@ a{ color:inherit; text-decoration:none; }
 }
 .card.venture .card-body p{ white-space:normal; }
 
-/* Live site snapshot inside the venture card */
+/* Live site snapshot inside the venture card (wrapper + img) */
 .venture-shot{
   display:block;
   width:calc(100% - 36px);
   margin:2px auto 0;
   aspect-ratio:2 / 1;
-  object-fit:cover;
-  object-position:top;
   border-radius:12px;
   border:1px solid var(--border);
   background:var(--surface-2);
+  overflow:hidden;
+}
+.venture-shot img{
+  display:block;
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:top;
 }
 
 /* Action chips — each venture's calls to action */
@@ -415,32 +420,44 @@ footer p + p{ margin-top:6px; }
   .cards.cols-2{ grid-template-columns:1fr 1fr; }
 
   /* Venture cards go two-column on desktop:
-     story + actions on the left, live snapshot as a display window right.
+     the left content (title, description, chips) drives the card height;
+     the snapshot fills that exact height on the right — no void, no overflow.
      Only applies while the card actually has a snapshot (.has-shot). */
   .card.venture.has-shot{
     display:grid;
     grid-template-columns:1fr 300px;
     grid-template-areas:
-      "head    shot"
-      "actions shot";
+      "head shot"
+      "acts shot";
+    align-items:start;
   }
   .card.venture.has-shot .venture-head{
     grid-area:head;
-    padding:24px 10px 6px 22px;
+    padding:26px 18px 14px 24px;
   }
   .card.venture.has-shot .venture-actions{
-    grid-area:actions;
-    align-self:end;
-    padding:12px 10px 22px 22px;
+    grid-area:acts;
+    padding:0 18px 26px 24px;
+    align-content:flex-start;
   }
+  /* Snapshot wrapper spans both rows on the right. position:relative + an
+     absolute img means the image never inflates the grid — the left column
+     (title, description, chips) fully controls the card height. */
   .card.venture.has-shot .venture-shot{
     grid-area:shot;
     align-self:stretch;
+    position:relative;
     width:auto;
-    height:calc(100% - 28px);
-    min-height:190px;
+    height:auto;
+    min-height:100%;
     aspect-ratio:auto;
-    margin:14px 14px 14px 4px;
+    margin:14px 14px 14px 6px;
+  }
+  .card.venture.has-shot .venture-shot img{
+    position:absolute;
+    inset:0;
+    width:100%; height:100%;
+    object-position:top left;
   }
 }
 </style>
@@ -548,7 +565,7 @@ const HUB = {
           href: 'https://geolenzstudio.netlify.app',
           preview: true,
           actions: [
-            { icon: 'calendar', title: 'Book a session', href: '#' /* REPLACE: booking link */ }
+            { icon: 'calendar', title: 'Book a session', href: 'https://geolenzstudio.netlify.app/#booking' }
           ]
         },
         {
@@ -688,13 +705,15 @@ const HUB = {
     // If it fails to load, the image removes itself — no broken frames.
     if (link.preview){
       art.classList.add('has-shot');
+      const shot = document.createElement('span');
+      shot.className = 'venture-shot';
       const img = document.createElement('img');
-      img.className = 'venture-shot';
       img.loading = 'lazy';
       img.alt = 'Preview of ' + link.title;
       img.src = 'https://s0.wp.com/mshots/v1/' + encodeURIComponent(link.href) + '?w=800';
-      img.onerror = () => { img.remove(); art.classList.remove('has-shot'); };
-      art.appendChild(img);
+      img.onerror = () => { shot.remove(); art.classList.remove('has-shot'); };
+      shot.appendChild(img);
+      art.appendChild(shot);
     }
 
     // Action chips
