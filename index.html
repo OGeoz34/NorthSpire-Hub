@@ -48,7 +48,7 @@
    ========================================================================== */
 *{ margin:0; padding:0; box-sizing:border-box; }
 
-html{ scroll-behavior:smooth; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
 
 body{
   background:var(--bg);
@@ -66,6 +66,14 @@ body{
 }
 
 ::selection{ background:var(--accent); color:var(--bg); }
+
+/* Starfield canvas — sits behind everything, never intercepts taps */
+#sky{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+}
 
 a{ color:inherit; text-decoration:none; }
 
@@ -253,6 +261,22 @@ a{ color:inherit; text-decoration:none; }
   color:var(--accent);
 }
 
+/* Spotlight card — a lead card with extra presence (e.g. the founder) */
+.card.spotlight{
+  padding:22px;
+  background:linear-gradient(180deg, var(--surface-2), var(--surface));
+  border-color:var(--border-lit);
+}
+.card.spotlight .card-icon{ width:50px; height:50px; }
+.card.spotlight .card-icon svg{ width:23px; height:23px; }
+.card.spotlight .card-body h3{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:18.5px;
+  letter-spacing:.03em;
+}
+.card.spotlight .card-body p{ white-space:normal; }
+
 /* Venture cards — flagship companies with their actions built in */
 .card.venture{
   flex-direction:column;
@@ -383,15 +407,48 @@ footer p + p{ margin-top:6px; }
    ========================================================================== */
 @media (min-width: 720px){
   :root{ --gutter:32px; }
-  .shell{ max-width:720px; }
+  .shell{ max-width:840px; }
   .hero{ padding-top:120px; }
   .section{ margin-top:64px; }
   .cards{ gap:14px; }
   .cards.tiles{ grid-template-columns:repeat(6, 1fr); }
+  .cards.cols-2{ grid-template-columns:1fr 1fr; }
+
+  /* Venture cards go two-column on desktop:
+     story + actions on the left, live snapshot as a display window right.
+     Only applies while the card actually has a snapshot (.has-shot). */
+  .card.venture.has-shot{
+    display:grid;
+    grid-template-columns:1fr 300px;
+    grid-template-areas:
+      "head    shot"
+      "actions shot";
+  }
+  .card.venture.has-shot .venture-head{
+    grid-area:head;
+    padding:24px 10px 6px 22px;
+  }
+  .card.venture.has-shot .venture-actions{
+    grid-area:actions;
+    align-self:end;
+    padding:12px 10px 22px 22px;
+  }
+  .card.venture.has-shot .venture-shot{
+    grid-area:shot;
+    align-self:stretch;
+    width:auto;
+    height:calc(100% - 28px);
+    min-height:190px;
+    aspect-ratio:auto;
+    margin:14px 14px 14px 4px;
+  }
 }
 </style>
 </head>
 <body>
+
+<!-- Starfield — fixed behind all content, drawn by the script below -->
+<canvas id="sky" aria-hidden="true"></canvas>
 
 <div class="shell">
 
@@ -463,11 +520,24 @@ const ICONS = {
   youtube:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12.5" rx="3.4"/><path d="m10.3 9.5 4.4 2.75-4.4 2.75Z" fill="currentColor" stroke="none"/></svg>',
   linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.2 10.5V16M8.2 8.1v.1M12 16v-3.2a2 2 0 0 1 4 0V16"/></svg>',
   facebook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.8 8.2h2.4V4.8h-2.4a3.8 3.8 0 0 0-3.8 3.8v2.2H8.6v3.2H11v6.2h3.2V14h2.6l.6-3.2h-3.2V8.8a.6.6 0 0 1 .6-.6Z"/></svg>',
+  founder:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1"/></svg>',
   arrow:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
 };
 
 const HUB = {
   sections: [
+    {
+      label: 'The Founder',
+      links: [
+        {
+          icon: 'founder',
+          spotlight: true,
+          title: 'Georlennys Martinez',
+          desc: 'Founder, CEO & Creative Director — the vision behind Northspire Ventures.',
+          href: 'founder.html'
+        }
+      ]
+    },
     {
       label: 'Ventures',
       links: [
@@ -517,6 +587,7 @@ const HUB = {
     },
     {
       label: 'Contact',
+      columns: 2, /* two-up on desktop, stacked on mobile */
       links: [
         {
           icon: 'mail',
@@ -559,7 +630,9 @@ const HUB = {
 
     // Cards
     const grid = document.createElement('div');
-    grid.className = 'cards' + (section.tiles ? ' tiles' : '');
+    grid.className = 'cards'
+      + (section.tiles ? ' tiles' : '')
+      + (section.columns === 2 ? ' cols-2' : '');
 
     section.links.forEach(link => {
       grid.appendChild(link.actions ? ventureCard(link) : linkCard(link, section.tiles));
@@ -578,7 +651,7 @@ const HUB = {
   // Standard link card (also used for social tiles)
   function linkCard(link, tile){
     const a = document.createElement('a');
-    a.className = 'card' + (tile ? ' tile' : '');
+    a.className = 'card' + (tile ? ' tile' : '') + (link.spotlight ? ' spotlight' : '');
     setHref(a, link.href);
     a.innerHTML =
       '<span class="card-icon" aria-hidden="true">' + (ICONS[link.icon] || '') + '</span>' +
@@ -614,12 +687,13 @@ const HUB = {
     // a loading frame while the snapshot generates; it's cached after.
     // If it fails to load, the image removes itself — no broken frames.
     if (link.preview){
+      art.classList.add('has-shot');
       const img = document.createElement('img');
       img.className = 'venture-shot';
       img.loading = 'lazy';
       img.alt = 'Preview of ' + link.title;
       img.src = 'https://s0.wp.com/mshots/v1/' + encodeURIComponent(link.href) + '?w=800';
-      img.onerror = () => img.remove();
+      img.onerror = () => { img.remove(); art.classList.remove('has-shot'); };
       art.appendChild(img);
     }
 
@@ -659,7 +733,80 @@ const HUB = {
     }[c]));
   }
 })();
-</script>
+
+/* ==========================================================================
+   Starfield — a quiet northern sky behind the page.
+   Stars twinkle and drift slowly toward the top ("north"). Density scales
+   with screen size. Pauses when the tab is hidden; renders a static sky
+   for visitors who prefer reduced motion.
+   ========================================================================== */
+(function starfield(){
+  const canvas = document.getElementById('sky');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let stars = [], W, H, raf = 0;
+
+  function build(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2); // cap for phone perf
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const count = Math.min(160, Math.round((W * H) / 9000));
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.1 + 0.3,        // radius: 0.3–1.4px, atmosphere not confetti
+      s: Math.random() * 12 + 6,           // drift speed: 6–18 px per SECOND, northward
+      p: Math.random() * Math.PI * 2,      // twinkle phase
+      t: Math.random() * 0.015 + 0.004     // twinkle speed
+    }));
+  }
+
+  let last = 0;
+  function frame(now){
+    // Time-based motion: same speed on 60Hz and 120Hz displays.
+    // dt is capped so returning to a background tab never causes a jump.
+    const t = now || performance.now();
+    const dt = last ? Math.min((t - last) / 1000, 0.05) : 0.016;
+    last = t;
+
+    ctx.clearRect(0, 0, W, H);
+    for (const st of stars){
+      st.p += st.t;
+      if (!reduced){
+        st.y -= st.s * dt;                  // drift north
+        if (st.y < -2){ st.y = H + 2; st.x = Math.random() * W; }
+      }
+      // Twinkle between ~0.1 and ~0.6 alpha; larger stars take the accent tint
+      ctx.globalAlpha = Math.max(0.08, 0.35 + Math.sin(st.p) * 0.25);
+      ctx.fillStyle = st.r > 1 ? '#a3c4dc' : '#e9ecf1';
+      ctx.beginPath();
+      ctx.arc(st.x, st.y, st.r, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (!reduced) raf = requestAnimationFrame(frame);
+  }
+
+  build();
+  frame(); // reduced-motion visitors get one static, already-varied sky
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    build();
+    frame();
+  });
+
+  // Don't burn battery in a background tab
+  document.addEventListener('visibilitychange', () => {
+    cancelAnimationFrame(raf);
+    if (!document.hidden && !reduced){ last = 0; frame(); }
+  });
+})();</script>
 
 </body>
 </html>
