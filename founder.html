@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c10">
+<meta name="description" content="Georlennys Martinez — Founder, CEO & Creative Director of Northspire Ventures. Building businesses designed to outlast their founders.">
+<title>Georlennys Martinez — Founder, Northspire Ventures</title>
+
+<!-- Typography: Marcellus (display) + Albert Sans (body) — same as the hub -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   NORTHSPIRE — Founder / Vision page
+   Inherits the exact design tokens from index.html so the two pages are one
+   visual system. If you re-theme the hub, copy the :root block over.
+   ========================================================================== */
+:root{
+  --bg:          #0a0c10;
+  --surface:     #10141b;
+  --surface-2:   #141a23;
+  --border:      #1e2530;
+  --border-lit:  #2c3644;
+  --text:        #e9ecf1;
+  --muted:       #8c95a3;
+  --faint:       #5b6472;
+  --accent:      #a3c4dc;
+  --accent-soft: rgba(163,196,220,.10);
+  --glow:        rgba(163,196,220,.07);
+
+  --font-display: 'Marcellus', 'Times New Roman', serif;
+  --font-body:    'Albert Sans', -apple-system, 'SF Pro Text', system-ui, sans-serif;
+
+  --radius:      18px;
+  --radius-sm:   14px;
+  --gutter:      20px;
+  --shadow:      0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  --shadow-lift: 0 2px 4px rgba(0,0,0,.4), 0 20px 48px rgba(0,0,0,.5);
+
+  --glass:       rgba(20,26,35,.55);
+  --maxw:        860px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  min-height:100dvh;
+  overflow-x:hidden;
+}
+::selection{ background:var(--accent); color:var(--bg); }
+a{ color:inherit; text-decoration:none; }
+
+/* Starfield — identical behaviour to the hub */
+#sky{ position:fixed; inset:0; z-index:-1; pointer-events:none; }
+
+.wrap{
+  width:100%;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:0 var(--gutter) calc(80px + env(safe-area-inset-bottom));
+}
+
+/* ---- Back-to-hub nav ---- */
+.topbar{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:22px var(--gutter) 0;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.back{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:13px; letter-spacing:.04em; color:var(--muted);
+  transition:color .28s ease, transform .28s ease;
+}
+.back svg{ width:15px; height:15px; transition:transform .28s ease; }
+.back:hover{ color:var(--accent); }
+.back:hover svg{ transform:translateX(-3px); }
+.topbar .brand{
+  font-family:var(--font-display); font-size:13px;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--faint);
+}
+
+/* ==========================================================================
+   Shared section rhythm + scroll reveal
+   ========================================================================== */
+section{ margin-top:120px; }
+.eyebrow{
+  font-size:11.5px; font-weight:600; letter-spacing:.34em;
+  text-transform:uppercase; color:var(--accent);
+  margin-bottom:18px;
+}
+.section-title{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(26px,5.4vw,38px); letter-spacing:.02em;
+  line-height:1.2; margin-bottom:22px;
+}
+.lead{ color:var(--muted); font-size:clamp(16px,2.4vw,18px); max-width:64ch; }
+.lead + .lead{ margin-top:18px; }
+
+/* Scroll reveal — elements rise in as they enter the viewport */
+.reveal{ opacity:0; transform:translateY(26px); transition:opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1); }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ==========================================================================
+   SECTION 1 — HERO
+   ========================================================================== */
+.hero{ margin-top:56px; text-align:center; position:relative; }
+.hero::before{
+  content:""; position:absolute; top:-60px; left:50%;
+  width:520px; height:520px; transform:translateX(-50%);
+  background:radial-gradient(closest-side, var(--glow), transparent 70%);
+  pointer-events:none;
+}
+/* Portrait — swap the <img> src; frame stays if no image */
+.portrait{
+  width:172px; height:172px; margin:0 auto 34px;
+  border-radius:50%;
+  border:1px solid var(--border-lit);
+  background:
+    radial-gradient(circle at 50% 38%, var(--surface-2), var(--surface));
+  box-shadow:var(--shadow), 0 0 0 8px rgba(163,196,220,.04);
+  display:grid; place-items:center;
+  overflow:hidden; position:relative;
+}
+.portrait img{ width:100%; height:100%; object-fit:cover; }
+.portrait .ph{
+  font-family:var(--font-display); font-size:52px; color:var(--faint);
+  letter-spacing:.02em;
+}
+.hero h1{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(30px,7vw,46px); letter-spacing:.03em; margin-bottom:14px;
+}
+.hero .role{
+  font-size:13px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:6px;
+}
+.hero .creds{
+  font-size:12px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:36px;
+}
+.hero .headline{
+  font-family:var(--font-display); font-weight:400;
+  font-size:clamp(21px,4.4vw,30px); line-height:1.35;
+  max-width:20ch; margin:0 auto 26px;
+}
+.hero .headline em{ color:var(--accent); font-style:italic; }
+.hero .mission{ color:var(--muted); max-width:54ch; margin:0 auto; }
+.scrollcue{
+  margin-top:52px; display:inline-flex; flex-direction:column; align-items:center;
+  gap:8px; color:var(--faint); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+}
+.scrollcue svg{ width:16px; height:16px; animation:bob 2.4s ease-in-out infinite; }
+@keyframes bob{ 0%,100%{ transform:translateY(0); opacity:.6 } 50%{ transform:translateY(5px); opacity:1 } }
+
+/* ==========================================================================
+   SECTION 2 — STORY  (prose column)
+   ========================================================================== */
+.prose p{ color:var(--muted); font-size:clamp(16px,2.3vw,18px); max-width:64ch; }
+.prose p + p{ margin-top:22px; }
+.prose .pull{
+  font-family:var(--font-display); color:var(--text);
+  font-size:clamp(20px,3.6vw,26px); line-height:1.4;
+  border-left:2px solid var(--accent); padding-left:22px;
+  margin:38px 0; max-width:52ch;
+}
+
+/* ==========================================================================
+   SECTION 3 — LEADERSHIP & HEALTHCARE  (glass panel + principle rows)
+   ========================================================================== */
+.glass{
+  background:var(--glass);
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+  border:1px solid var(--border); border-radius:var(--radius);
+  padding:clamp(24px,4vw,40px); box-shadow:var(--shadow);
+}
+.principles{ display:grid; gap:2px; margin-top:26px; }
+.principle{
+  display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:start;
+  padding:18px 4px; border-top:1px solid var(--border);
+}
+.principle:first-child{ border-top:none; }
+.principle .k{
+  font-family:var(--font-display); font-size:15px; color:var(--accent);
+  white-space:nowrap; padding-top:1px;
+}
+.principle .v{ color:var(--muted); font-size:15px; }
+
+/* ==========================================================================
+   SECTION 4 — PHILOSOPHY  (interactive cards)
+   ========================================================================== */
+.grid{ display:grid; gap:14px; }
+.grid.g3{ grid-template-columns:1fr; }
+.tenet{
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:22px;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease, box-shadow .3s ease;
+  position:relative; overflow:hidden;
+}
+.tenet::after{
+  content:""; position:absolute; inset:0;
+  background:radial-gradient(600px circle at var(--mx,50%) var(--my,0%), var(--accent-soft), transparent 40%);
+  opacity:0; transition:opacity .4s ease; pointer-events:none;
+}
+.tenet:hover{ transform:translateY(-3px); border-color:var(--border-lit); background:var(--surface-2); box-shadow:var(--shadow-lift); }
+.tenet:hover::after{ opacity:1; }
+.tenet .n{ font-size:12px; letter-spacing:.14em; color:var(--faint); margin-bottom:12px; }
+.tenet h3{ font-family:var(--font-display); font-weight:400; font-size:19px; letter-spacing:.02em; margin-bottom:8px; }
+.tenet p{ color:var(--muted); font-size:14px; }
+
+/* ==========================================================================
+   SECTION 5 — ECOSYSTEM  (central node + venture cards)
+   ========================================================================== */
+.eco{ margin-top:30px; }
+.eco-core{
+  text-align:center; margin-bottom:30px;
+}
+.eco-core .node{
+  width:66px; height:66px; margin:0 auto 16px; color:var(--accent);
+  animation:mark-pulse 6s ease-in-out infinite;
+}
+@keyframes mark-pulse{ 0%,100%{ opacity:.85; filter:drop-shadow(0 0 6px rgba(163,196,220,.25)) } 50%{ opacity:1; filter:drop-shadow(0 0 14px rgba(163,196,220,.45)) } }
+.eco-core h3{ font-family:var(--font-display); font-size:22px; letter-spacing:.04em; }
+.eco-core p{ color:var(--muted); font-size:14px; margin-top:6px; }
+.eco-grid{ display:grid; gap:12px; }
+.eco-card{
+  display:flex; align-items:center; gap:16px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:18px;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease;
+}
+.eco-card:hover{ transform:translateY(-2px); border-color:var(--border-lit); background:var(--surface-2); }
+.eco-card .badge{
+  flex:none; width:46px; height:46px; border-radius:12px; display:grid; place-items:center;
+  background:var(--accent-soft); border:1px solid rgba(163,196,220,.14);
+  font-family:var(--font-display); font-size:19px; color:var(--accent);
+}
+.eco-card .txt h4{ font-size:15.5px; font-weight:600; }
+.eco-card .txt p{ color:var(--muted); font-size:13px; margin-top:2px; }
+.eco-card .status{
+  margin-left:auto; flex:none; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--faint); border:1px solid var(--border-lit); border-radius:20px; padding:4px 10px;
+}
+.eco-card .status.live{ color:var(--accent); border-color:rgba(163,196,220,.3); }
+
+/* ==========================================================================
+   SECTION 6 — TIMELINE
+   ========================================================================== */
+.timeline{ margin-top:34px; position:relative; padding-left:26px; }
+.timeline::before{
+  content:""; position:absolute; left:6px; top:6px; bottom:6px; width:1px;
+  background:linear-gradient(to bottom, transparent, var(--border-lit) 12%, var(--border-lit) 88%, transparent);
+}
+.tl-item{ position:relative; padding:0 0 34px; }
+.tl-item:last-child{ padding-bottom:0; }
+.tl-item::before{
+  content:""; position:absolute; left:-23px; top:5px; width:9px; height:9px;
+  border-radius:50%; background:var(--bg); border:1.5px solid var(--accent);
+}
+.tl-item.future::before{ background:var(--accent); box-shadow:0 0 10px rgba(163,196,220,.5); }
+.tl-item .when{ font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:6px; }
+.tl-item h4{ font-family:var(--font-display); font-weight:400; font-size:19px; margin-bottom:6px; }
+.tl-item p{ color:var(--muted); font-size:14.5px; max-width:56ch; }
+.tl-edit{ font-size:12px; color:var(--faint); margin-top:16px; font-style:italic; }
+
+/* ==========================================================================
+   SECTION 7 — CORE VALUES  (icon cards)
+   ========================================================================== */
+.values{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:26px; }
+.value{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
+  padding:20px 18px; text-align:left;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease;
+}
+.value:hover{ transform:translateY(-2px); border-color:var(--border-lit); background:var(--surface-2); }
+.value .ic{ width:26px; height:26px; color:var(--accent); margin-bottom:12px; }
+.value .ic svg{ width:100%; height:100%; }
+.value h4{ font-family:var(--font-display); font-weight:400; font-size:16.5px; letter-spacing:.02em; }
+.value p{ color:var(--muted); font-size:13px; margin-top:5px; }
+
+/* ==========================================================================
+   SECTION 8 — LETTER
+   ========================================================================== */
+.letter{ margin-top:34px; }
+.letter .body p{ color:var(--text); font-size:clamp(16px,2.4vw,18px); line-height:1.75; max-width:60ch; }
+.letter .body p + p{ margin-top:20px; }
+.letter .sign{ margin-top:34px; }
+.letter .sign .name{ font-family:var(--font-display); font-size:26px; color:var(--text); letter-spacing:.02em; }
+.letter .sign .title{ font-size:12.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-top:6px; }
+
+/* CTA back to the ecosystem */
+.endcta{ margin-top:64px; text-align:center; }
+.endcta a{
+  display:inline-flex; align-items:center; gap:10px;
+  border:1px solid var(--border-lit); border-radius:14px;
+  padding:14px 22px; font-size:14px; color:var(--text);
+  transition:border-color .3s ease, transform .3s ease;
+}
+.endcta a svg{ width:15px; height:15px; color:var(--accent); transition:transform .3s ease; }
+.endcta a:hover{ border-color:var(--accent); }
+.endcta a:hover svg{ transform:translateX(3px); }
+
+footer{ margin-top:70px; text-align:center; color:var(--faint); font-size:12px; letter-spacing:.12em; }
+footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); opacity:.55; }
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .reveal{ opacity:1; transform:none; transition:none; }
+  .scrollcue svg, .eco-core .node{ animation:none; }
+}
+
+/* ==========================================================================
+   Desktop expansion
+   ========================================================================== */
+@media (min-width:720px){
+  :root{ --gutter:32px; }
+  section{ margin-top:150px; }
+  .grid.g3{ grid-template-columns:repeat(2,1fr); }
+  .values{ grid-template-columns:repeat(3,1fr); }
+  .hero{ margin-top:70px; }
+  .portrait{ width:200px; height:200px; }
+}
+@media (min-width:980px){
+  .grid.g3{ grid-template-columns:repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<!-- Back to the hub -->
+<div class="topbar">
+  <a class="back" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+    <span>Back to Hub</span>
+  </a>
+  <span class="brand">Northspire</span>
+</div>
+
+<div class="wrap">
+
+  <!-- ====================================================================
+       SECTION 1 — HERO
+       Swap the portrait: replace the .ph span with <img src="you.jpg" alt="Georlennys Martinez">
+       ==================================================================== -->
+  <header class="hero">
+    <div class="portrait reveal">
+      <!-- PLACEHOLDER: replace this span with your portrait <img> -->
+      <span class="ph">GM</span>
+    </div>
+    <h1 class="reveal">Georlennys Martinez</h1>
+    <p class="role reveal">Founder, CEO &amp; Creative Director · Northspire Ventures</p>
+    <p class="creds reveal">Registered Nurse (RN) &nbsp;•&nbsp; Emergency Medical Technician (EMT)</p>
+    <p class="headline reveal">Building businesses designed to <em>outlast their founders.</em></p>
+    <p class="mission reveal">Northspire Ventures exists to build an ecosystem of enduring companies — each solving a real problem, each built to keep creating value for decades.</p>
+    <span class="scrollcue reveal">
+      <span>The Vision</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+    </span>
+  </header>
+
+  <!-- ====================================================================
+       SECTION 2 — STORY
+       ==================================================================== -->
+  <section class="story">
+    <p class="eyebrow reveal">The Story</p>
+    <h2 class="section-title reveal">Why Northspire exists</h2>
+    <div class="prose">
+      <p class="reveal">Northspire did not begin as a business plan. It began as a conviction — that the things worth building are the things built to last. Not the fastest wins or the loudest launches, but companies with craftsmanship at their core and a reason to exist long after the trend that birthed them has passed.</p>
+      <p class="pull reveal">The goal was never to build one successful business. It was to build an ecosystem of enduring ones.</p>
+      <p class="reveal">That conviction is why Northspire spans what looks, at first, like unrelated ground — photography, technology, collectibles, artificial intelligence, investing, and the ventures still to come. They are not scattered interests. Each is a discipline of the same craft: seeing a real problem clearly, and building something honest to solve it.</p>
+      <p class="reveal">Geo Lenz Studio is about capturing what matters and doing it with intention. Astral Collectionz is about stewardship — curating value that outlives the moment. MyTCG Ledger is about giving people clarity and control over what they own. Different surfaces, one philosophy: build with care, earn trust through the work, and leave things better than you found them.</p>
+      <p class="reveal">Northspire is the throughline. It is the promise that every company under its name is held to the same standard, and the belief that businesses, at their best, should quietly improve the lives of the people they serve.</p>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 3 — LEADERSHIP & HEALTHCARE
+       ==================================================================== -->
+  <section class="leadership">
+    <p class="eyebrow reveal">Leadership</p>
+    <h2 class="section-title reveal">What healthcare taught me about building</h2>
+    <p class="lead reveal">Before Northspire, the work was in emergency rooms and ambulances — as a Registered Nurse in the State of New York and a certified Emergency Medical Technician. That work was never separate from how I lead today. It is the foundation of it.</p>
+    <div class="glass reveal" style="margin-top:30px">
+      <div class="principles">
+        <div class="principle"><span class="k">Calm under pressure</span><span class="v">In an emergency, panic helps no one. You learn to steady yourself first, then act. Every company decision is easier when composure comes before reaction.</span></div>
+        <div class="principle"><span class="k">Decisions with incomplete information</span><span class="v">You rarely have the full picture and still have to choose well. Building a business is the same — you move thoughtfully on what you know, and adjust as you learn more.</span></div>
+        <div class="principle"><span class="k">Precision &amp; detail</span><span class="v">In care, a small detail is the difference that matters. That same attention is why craftsmanship — not shortcuts — defines every Northspire product.</span></div>
+        <div class="principle"><span class="k">Accountability</span><span class="v">When you are responsible for someone's wellbeing, there is nowhere to hide from the outcome. I carry that ownership into everything Northspire ships.</span></div>
+        <div class="principle"><span class="k">Compassion &amp; service</span><span class="v">Healthcare is service at its most human. Business should be too — companies exist to make people's lives genuinely better, not just to extract from them.</span></div>
+        <div class="principle"><span class="k">Discipline &amp; continuous learning</span><span class="v">Medicine never lets you stop learning. Neither does building. The discipline to keep improving is the engine behind long-term thinking.</span></div>
+        <div class="principle"><span class="k">Trust, earned through action</span><span class="v">Patients trust what you do, not what you say. Northspire is built the same way — trust is earned quietly, through the work, over time.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 4 — PHILOSOPHY
+       ==================================================================== -->
+  <section class="philosophy">
+    <p class="eyebrow reveal">Philosophy</p>
+    <h2 class="section-title reveal">The principles behind the work</h2>
+    <p class="lead reveal">Ten convictions that shape every decision, every product, and every company under the Northspire name.</p>
+    <div class="grid g3" id="tenets" style="margin-top:30px"></div>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 5 — ECOSYSTEM
+       ==================================================================== -->
+  <section class="ecosystem">
+    <p class="eyebrow reveal">The Ecosystem</p>
+    <h2 class="section-title reveal">One vision, many companies</h2>
+    <p class="lead reveal">Each company is a single piece of a larger whole — not a separate project, but a facet of the same long-term mission.</p>
+    <div class="eco">
+      <div class="eco-core reveal">
+        <div class="node" aria-hidden="true"><svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 2 L27.5 20.5 L46 24 L27.5 27.5 L24 46 L20.5 27.5 L2 24 L20.5 20.5 Z"/></svg></div>
+        <h3>Northspire Ventures</h3>
+        <p>The umbrella holding every company to one standard.</p>
+      </div>
+      <div class="eco-grid" id="ecogrid"></div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 6 — TIMELINE   (edit dates/text freely — all placeholders)
+       ==================================================================== -->
+  <section class="journey">
+    <p class="eyebrow reveal">The Journey</p>
+    <h2 class="section-title reveal">Where Northspire began, and where it's going</h2>
+    <div class="timeline" id="timeline"></div>
+    <p class="tl-edit reveal">The dates and milestones above are placeholders — edit the TIMELINE array in the script to match your real story.</p>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 7 — CORE VALUES
+       ==================================================================== -->
+  <section class="values-sec">
+    <p class="eyebrow reveal">Core Values</p>
+    <h2 class="section-title reveal">What Northspire stands for</h2>
+    <div class="values" id="values"></div>
+  </section>
+
+  <!-- ====================================================================
+       SECTION 8 — LETTER FROM THE FOUNDER
+       ==================================================================== -->
+  <section class="letter-sec">
+    <p class="eyebrow reveal">A Letter From the Founder</p>
+    <div class="letter glass reveal">
+      <div class="body">
+        <p>If you have read this far, you already understand what Northspire is trying to be. Not a single company chasing a single win — but a family of businesses built to endure.</p>
+        <p>I am not interested in shortcuts. I would rather build something slowly and well than quickly and forgettably. I believe details matter, that trust is earned rather than claimed, and that the best businesses quietly make people's lives better. I believe the learning never ends, and that every company should have a real reason to exist.</p>
+        <p>Northspire is early. There is far more ahead than behind. But the standard is set: craftsmanship over shortcuts, patience over noise, purpose over hype. My hope is to leave behind companies that keep creating value long after I am no longer the one building them.</p>
+        <p>Thank you for taking the time to understand the vision. The work is just beginning.</p>
+      </div>
+      <div class="sign">
+        <div class="name">Georlennys Martinez</div>
+        <div class="title">Founder, CEO &amp; Creative Director · Northspire Ventures</div>
+      </div>
+    </div>
+
+    <div class="endcta reveal">
+      <a href="index.html">
+        <span>Explore the Northspire ecosystem</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <footer class="reveal">
+    <div class="fm" aria-hidden="true"><svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 4 L27 21 L44 24 L27 27 L24 44 L21 27 L4 24 L21 21 Z"/></svg></div>
+    <p>NORTHSPIRE VENTURES</p>
+    <p id="year"></p>
+  </footer>
+
+</div>
+
+<script>
+/* ==========================================================================
+   NORTHSPIRE — Founder page content & behaviour
+   Everything below is data-driven. Edit these arrays to update the page;
+   the markup is generated for you, exactly like the hub.
+   ========================================================================== */
+
+/* --- Section 4: Philosophy tenets --- */
+const TENETS = [
+  ['Think Long Term',                  'Build for decades, not for the next launch. Time rewards patience.'],
+  ['Details Matter',                   'The small things are the whole thing. Nothing ships half-finished.'],
+  ['Own Everything',                   'Take full responsibility for the outcome — no excuses, no hiding.'],
+  ['Create More Than You Consume',     'Leave more value in the world than you take out of it.'],
+  ['Never Stop Learning',             'Curiosity is the engine. The day you stop learning, you start declining.'],
+  ['Build Before You Scale',           'Get it right, then grow it. Scale amplifies quality and flaws alike.'],
+  ['Serve With Integrity',             'Do right by people even when no one is watching. Especially then.'],
+  ['Leave It Better',                  'Every project, every interaction — leave it better than you found it.'],
+  ['Quality Over Quantity',            'One thing done exceptionally beats ten done adequately.'],
+  ['Craftsmanship Wins',               'In the long run, care is the only durable advantage.']
+];
+
+/* --- Section 5: Ecosystem companies (status: 'live' or 'building') --- */
+const COMPANIES = [
+  ['G', 'Geo Lenz Studio',   'Cinematic photography & visual production.',            'live'],
+  ['A', 'Astral Collectionz', 'Curated Pokémon cards & collectibles.',                'live'],
+  ['M', 'MyTCG Ledger',       'Portfolio tracking for TCG collectors & investors.',   'live'],
+  ['AI','AI Products',        'Intelligent tools built across the ecosystem.',        'building'],
+  ['$', 'Investments',        'Long-term capital, deployed with discipline.',         'building'],
+  ['+', 'Future Ventures',    'The next enduring companies, still to come.',          'building']
+];
+
+/* --- Section 6: Timeline (ALL PLACEHOLDERS — edit freely) --- */
+const TIMELINE = [
+  ['The Beginning',    'Where Northspire started',  'A conviction that businesses should be built to last became the seed of an ecosystem.', false],
+  ['Building the Foundation', 'The first companies', 'Geo Lenz Studio, Astral Collectionz, and MyTCG Ledger established the standard for everything that follows.', false],
+  ['Where We Are Today', 'A growing ecosystem',     'Three live ventures, unified under one hub and one philosophy — with more in development.', false],
+  ['Where We Are Going', 'The future',              'AI products, disciplined investments, and future ventures — each held to the same standard of craftsmanship and endurance.', true]
+];
+
+/* --- Section 7: Core values --- */
+const VALUES = [
+  ['Integrity',            'Do right, always.',                'M12 3l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V6z'],
+  ['Innovation',           'Build what should exist.',         'M9 18h6M10 21h4M12 3a6 6 0 0 1 4 10c-1 1-1 2-1 3H9c0-1 0-2-1-3a6 6 0 0 1 4-10z'],
+  ['Craftsmanship',        'Care is the advantage.',           'M14 7l3 3-8 8-3-3zM17 10l3-3-3-3-3 3'],
+  ['Discipline',           'Consistency compounds.',           'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
+  ['Service',              'Make lives better.',               'M12 21s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z'],
+  ['Long-Term Thinking',   'Decades, not moments.',            'M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'],
+  ['Excellence',           'The high standard, held.',         'M12 3l2.5 6H21l-5 4 2 7-6-4-6 4 2-7-5-4h6.5z'],
+  ['Curiosity',            'Keep asking, keep learning.',      'M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17v.1M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'],
+  ['Responsibility',       'Own the outcome.',                 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'],
+  ['Continuous Learning',  'The work is never finished.',      'M4 7l8-4 8 4-8 4zM4 7v6l8 4 8-4V7M9 15v3l3 1.5 3-1.5v-3']
+];
+
+(function build(){
+  /* Philosophy */
+  const t = document.getElementById('tenets');
+  TENETS.forEach((x,i)=>{
+    const el = document.createElement('div');
+    el.className = 'tenet reveal';
+    el.innerHTML = '<div class="n">'+ String(i+1).padStart(2,'0') +'</div>'+
+                   '<h3>'+ esc(x[0]) +'</h3><p>'+ esc(x[1]) +'</p>';
+    t.appendChild(el);
+  });
+
+  /* Ecosystem */
+  const g = document.getElementById('ecogrid');
+  COMPANIES.forEach(c=>{
+    const el = document.createElement('div');
+    el.className = 'eco-card reveal';
+    const live = c[3]==='live';
+    el.innerHTML = '<span class="badge">'+ esc(c[0]) +'</span>'+
+      '<span class="txt"><h4>'+ esc(c[1]) +'</h4><p>'+ esc(c[2]) +'</p></span>'+
+      '<span class="status'+(live?' live':'')+'">'+ (live?'Live':'In Development') +'</span>';
+    g.appendChild(el);
+  });
+
+  /* Timeline */
+  const tl = document.getElementById('timeline');
+  TIMELINE.forEach(item=>{
+    const el = document.createElement('div');
+    el.className = 'tl-item reveal' + (item[3]?' future':'');
+    el.innerHTML = '<div class="when">'+ esc(item[0]) +'</div>'+
+      '<h4>'+ esc(item[1]) +'</h4><p>'+ esc(item[2]) +'</p>';
+    tl.appendChild(el);
+  });
+
+  /* Values */
+  const v = document.getElementById('values');
+  VALUES.forEach(x=>{
+    const el = document.createElement('div');
+    el.className = 'value reveal';
+    el.innerHTML = '<div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="'+ x[2] +'"/></svg></div>'+
+      '<h4>'+ esc(x[0]) +'</h4><p>'+ esc(x[1]) +'</p>';
+    v.appendChild(el);
+  });
+
+  document.getElementById('year').textContent = '© ' + new Date().getFullYear() + ' · Building companies that endure';
+
+  /* Scroll reveal via IntersectionObserver, with a stagger by DOM order */
+  const reveals = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting){
+          const el = e.target;
+          const sibs = [...el.parentElement.children].filter(n=>n.classList.contains('reveal'));
+          const idx = Math.max(0, sibs.indexOf(el));
+          el.style.transitionDelay = Math.min(idx*60, 300) + 'ms';
+          el.classList.add('in');
+          io.unobserve(el);
+        }
+      });
+    }, { threshold:.12, rootMargin:'0px 0px -8% 0px' });
+    reveals.forEach(el=>io.observe(el));
+  } else {
+    reveals.forEach(el=>el.classList.add('in'));
+  }
+
+  /* Philosophy cards: pointer-follow glow (desktop pointers only) */
+  if (matchMedia('(hover:hover)').matches){
+    document.getElementById('tenets').addEventListener('pointermove', e=>{
+      const card = e.target.closest('.tenet');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
+  }
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+})();
+
+/* ==========================================================================
+   Starfield — identical engine to the hub (northward drift, time-based).
+   ========================================================================== */
+(function starfield(){
+  const canvas = document.getElementById('sky');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let stars = [], W, H, raf = 0, last = 0;
+
+  function make(){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const count = Math.min(160, Math.round((W*H)/9000));
+    stars = Array.from({length:count}, ()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.1+0.3, s:Math.random()*12+6,
+      p:Math.random()*Math.PI*2, t:Math.random()*0.015+0.004
+    }));
+  }
+  function frame(now){
+    const tnow = now || performance.now();
+    const dt = last ? Math.min((tnow-last)/1000, 0.05) : 0.016; last = tnow;
+    ctx.clearRect(0,0,W,H);
+    for (const st of stars){
+      st.p += st.t;
+      if (!reduced){ st.y -= st.s*dt; if (st.y < -2){ st.y = H+2; st.x = Math.random()*W; } }
+      ctx.globalAlpha = Math.max(0.08, 0.35 + Math.sin(st.p)*0.25);
+      ctx.fillStyle = st.r > 1 ? '#a3c4dc' : '#e9ecf1';
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 6.2832); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (!reduced) raf = requestAnimationFrame(frame);
+  }
+  make(); frame();
+  window.addEventListener('resize', ()=>{ cancelAnimationFrame(raf); make(); frame(); });
+  document.addEventListener('visibilitychange', ()=>{ cancelAnimationFrame(raf); if(!document.hidden && !reduced){ last=0; frame(); } });
+})();
+</script>
+
+</body>
+</html>
