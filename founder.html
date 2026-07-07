@@ -274,24 +274,98 @@ section{ margin-top:120px; }
 }
 
 /* ==========================================================================
-   SECTION 6 — TIMELINE
+   SECTION 6 — THE JOURNEY  (progress rail + expanding chapter cards)
    ========================================================================== */
-.timeline{ margin-top:34px; position:relative; padding-left:26px; }
-.timeline::before{
-  content:""; position:absolute; left:6px; top:6px; bottom:6px; width:1px;
-  background:linear-gradient(to bottom, transparent, var(--border-lit) 12%, var(--border-lit) 88%, transparent);
+.journey-intro{
+  font-family:var(--font-display);
+  font-size:clamp(19px,3.4vw,25px); line-height:1.45; color:var(--text);
+  max-width:30ch; margin:6px 0 8px;
 }
-.tl-item{ position:relative; padding:0 0 34px; }
-.tl-item:last-child{ padding-bottom:0; }
-.tl-item::before{
-  content:""; position:absolute; left:-23px; top:5px; width:9px; height:9px;
-  border-radius:50%; background:var(--bg); border:1.5px solid var(--accent);
+.journey-intro .accent{ color:var(--accent); }
+.journey-sub{ color:var(--muted); font-size:15px; margin-bottom:36px; }
+
+/* Progress rail — the ○──○──○──○──★ through-line */
+.rail{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:0; margin:0 0 32px; padding:0 6px; position:relative;
 }
-.tl-item.future::before{ background:var(--accent); box-shadow:0 0 10px rgba(163,196,220,.5); }
-.tl-item .when{ font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:6px; }
-.tl-item h4{ font-family:var(--font-display); font-weight:400; font-size:19px; margin-bottom:6px; }
-.tl-item p{ color:var(--muted); font-size:14.5px; max-width:56ch; }
-.tl-edit{ font-size:12px; color:var(--faint); margin-top:16px; font-style:italic; }
+.rail::before{
+  content:""; position:absolute; left:18px; right:18px; top:50%;
+  height:1px; transform:translateY(-50%);
+  background:linear-gradient(to right, var(--border-lit), var(--accent));
+  z-index:0;
+}
+.rail-node{
+  position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:9px;
+  background:none; border:none; cursor:pointer; padding:6px 2px; flex:1;
+  -webkit-tap-highlight-color:transparent;
+}
+.rail-node .dot{
+  width:13px; height:13px; border-radius:50%;
+  background:var(--bg); border:1.5px solid var(--accent);
+  transition:transform .3s ease, box-shadow .3s ease, background .3s ease;
+}
+.rail-node.star .dot{
+  width:16px; height:16px; border:none;
+  background:var(--accent); box-shadow:0 0 12px rgba(163,196,220,.5);
+  clip-path:polygon(50% 0,61% 39%,100% 39%,68% 61%,79% 100%,50% 76%,21% 100%,32% 61%,0 39%,39% 39%);
+  border-radius:0;
+}
+.rail-node .lbl{
+  font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint);
+  transition:color .3s ease; white-space:nowrap;
+}
+.rail-node:hover .dot,
+.rail-node.active .dot{ transform:scale(1.25); box-shadow:0 0 12px rgba(163,196,220,.5); }
+.rail-node.active .lbl{ color:var(--accent); }
+.rail-node:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:8px; }
+
+/* Chapter cards */
+.chapters{ display:grid; gap:12px; }
+.chapter{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; transition:border-color .3s ease, background .3s ease;
+}
+.chapter.open{ border-color:var(--border-lit); background:var(--surface-2); }
+.chapter-head{
+  display:flex; align-items:center; gap:16px; width:100%;
+  padding:20px; background:none; border:none; cursor:pointer; text-align:left;
+  color:inherit; font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
+}
+.chapter-num{
+  flex:none; font-family:var(--font-display); font-size:15px; color:var(--accent);
+  width:40px;
+}
+.chapter-titles{ flex:1; min-width:0; }
+.chapter-titles .ch{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:3px; }
+.chapter-titles h4{ font-family:var(--font-display); font-weight:400; font-size:19px; letter-spacing:.02em; }
+.chapter-chev{
+  flex:none; width:18px; height:18px; color:var(--faint);
+  transition:transform .35s cubic-bezier(.2,.8,.2,1), color .3s ease;
+}
+.chapter.open .chapter-chev{ transform:rotate(180deg); color:var(--accent); }
+.chapter-head:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+
+/* Expanding body — grid-rows animation (smooth, no fixed height needed) */
+.chapter-body{
+  display:grid; grid-template-rows:0fr;
+  transition:grid-template-rows .4s cubic-bezier(.2,.8,.2,1);
+}
+.chapter.open .chapter-body{ grid-template-rows:1fr; }
+.chapter-body-inner{ overflow:hidden; }
+.chapter-body-inner .pad{ padding:0 20px 24px 76px; }
+.chapter-body-inner p{ color:var(--muted); font-size:15px; line-height:1.7; }
+.chapter-body-inner p + p{ margin-top:12px; }
+.chapter-body-inner .quote{
+  font-family:var(--font-display); color:var(--text); font-size:17px; line-height:1.5;
+  border-left:2px solid var(--accent); padding-left:18px; margin-top:18px;
+}
+
+@media (max-width:560px){
+  .rail-node .lbl{ font-size:9px; letter-spacing:.08em; }
+  .chapter-body-inner .pad{ padding-left:20px; }
+}
 
 /* ==========================================================================
    SECTION 7 — CORE VALUES  (icon cards)
@@ -314,6 +388,12 @@ section{ margin-top:120px; }
 .letter{ margin-top:34px; }
 .letter .body p{ color:var(--text); font-size:clamp(16px,2.4vw,18px); line-height:1.75; max-width:60ch; }
 .letter .body p + p{ margin-top:20px; }
+.letter .body p.beat{
+  font-family:var(--font-display);
+  color:var(--accent);
+  font-size:clamp(18px,2.8vw,21px);
+  line-height:1.4;
+}
 .letter .sign{ margin-top:34px; }
 .letter .sign .name{ font-family:var(--font-display); font-size:26px; color:var(--text); letter-spacing:.02em; }
 .letter .sign .title{ font-size:12.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-top:6px; }
@@ -455,13 +535,14 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
   </section>
 
   <!-- ====================================================================
-       SECTION 6 — TIMELINE   (edit dates/text freely — all placeholders)
+       SECTION 6 — THE JOURNEY  (chapters, built from the CHAPTERS array below)
        ==================================================================== -->
   <section class="journey">
     <p class="eyebrow reveal">The Journey</p>
-    <h2 class="section-title reveal">Where Northspire began, and where it's going</h2>
-    <div class="timeline" id="timeline"></div>
-    <p class="tl-edit reveal">The dates and milestones above are placeholders — edit the TIMELINE array in the script to match your real story.</p>
+    <p class="journey-intro reveal">Northspire isn't a destination. It's a <span class="accent">commitment to keep building.</span></p>
+    <p class="journey-sub reveal">Every company has an origin. Mine began long before Northspire. Tap a chapter to read it.</p>
+    <div class="rail reveal" id="rail" role="tablist" aria-label="Journey chapters"></div>
+    <div class="chapters reveal" id="chapters"></div>
   </section>
 
   <!-- ====================================================================
@@ -480,10 +561,17 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
     <p class="eyebrow reveal">A Letter From the Founder</p>
     <div class="letter glass reveal">
       <div class="body">
-        <p>If you have read this far, you already understand what Northspire is trying to be. Not a single company chasing a single win — but a family of businesses built to endure.</p>
-        <p>I am not interested in shortcuts. I would rather build something slowly and well than quickly and forgettably. I believe details matter, that trust is earned rather than claimed, and that the best businesses quietly make people's lives better. I believe the learning never ends, and that every company should have a real reason to exist.</p>
-        <p>Northspire is early. There is far more ahead than behind. But the standard is set: craftsmanship over shortcuts, patience over noise, purpose over hype. My hope is to leave behind companies that keep creating value long after I am no longer the one building them.</p>
-        <p>Thank you for taking the time to understand the vision. The work is just beginning.</p>
+        <p>If you've made it this far, thank you.</p>
+        <p>You're not just looking at another website — you've taken the time to understand an idea that's still in its earliest chapters.</p>
+        <p>Northspire wasn't created to build one successful company. It was created to build many. A family of businesses connected by the same values: integrity, craftsmanship, curiosity, and a commitment to creating something genuinely useful.</p>
+        <p>I've never been interested in chasing shortcuts or overnight success. I'd rather spend years building something people can trust than months building something people forget. Every product, every company, and every decision should exist for a reason. If it doesn't make someone's life better, then it doesn't belong here.</p>
+        <p class="beat">This journey is personal to me.</p>
+        <p>Every business under Northspire represents something I've dedicated myself to learning — from photography and technology to healthcare, collecting, and entrepreneurship. They may serve different audiences, but they all share the same foundation: solve real problems, keep improving, and never stop learning.</p>
+        <p class="beat">Northspire is still at the beginning.</p>
+        <p>There is far more ahead than behind, and that's what excites me the most. You're seeing the foundation while it's being built, not the finished structure. Every project, every lesson, and every improvement brings us one step closer to the vision.</p>
+        <p>So thank you for taking the time to understand what we're building.</p>
+        <p>This is only the beginning, and I'm excited to have you here to watch the journey unfold. I hope that years from now you'll be able to look back at this page and say, "I remember when it all started."</p>
+        <p class="beat">Welcome to Northspire.</p>
       </div>
       <div class="sign">
         <div class="name">Georlennys Martinez</div>
@@ -538,12 +626,51 @@ const COMPANIES = [
   ['+', 'Future Ventures',    'The next enduring companies, still to come.',          'building']
 ];
 
-/* --- Section 6: Timeline (ALL PLACEHOLDERS — edit freely) --- */
-const TIMELINE = [
-  ['The Beginning',    'Where Northspire started',  'A conviction that businesses should be built to last became the seed of an ecosystem.', false],
-  ['Building the Foundation', 'The first companies', 'Geo Lenz Studio, Astral Collectionz, and MyTCG Ledger established the standard for everything that follows.', false],
-  ['Where We Are Today', 'A growing ecosystem',     'Three live ventures, unified under one hub and one philosophy — with more in development.', false],
-  ['Where We Are Going', 'The future',              'AI products, disciplined investments, and future ventures — each held to the same standard of craftsmanship and endurance.', true]
+/* --- Section 6: The Journey — five chapters. [railLabel, chapterNo, title, [paragraphs...], quote] --- */
+const CHAPTERS = [
+  ['Searching', 'Chapter I', 'Searching for Direction',
+    [
+      'My journey didn\u2019t begin with a business plan.',
+      'It began at the University at Albany, where I started on the pre-med track. Like many people, I thought I knew exactly where my life was headed.',
+      'I didn\u2019t.',
+      'Instead of forcing a path that no longer felt right, I took the time to figure out who I wanted to become. Looking back, that decision became one of the most important investments I ever made.'
+    ],
+    'One of the most important investments I ever made.'
+  ],
+  ['Experience', 'Chapter II', 'Learning Through Experience',
+    [
+      'Before becoming a Registered Nurse, I worked as an EMT, a phlebotomist, and an EKG technician.',
+      'Those roles taught me more than medicine. They taught me responsibility when people were depending on me. They taught me discipline, communication, humility, and how to stay calm under pressure. Most importantly, they taught me that the best professionals never stop learning.',
+      'That mindset has stayed with me ever since.'
+    ],
+    'The best professionals never stop learning.'
+  ],
+  ['Reading', 'Chapter III', 'Books Became My Second Education',
+    [
+      'Outside of work, I developed another habit that would quietly change my life. I read.',
+      'Business. Psychology. Leadership. Philosophy. Communication. Investing. History. Human behavior.',
+      'Authors like Jordan Peterson, Robert Greene, James Clear, Peter Thiel, Stephen Covey, Ben Horowitz, Chris Voss, David Goggins, Patrick Bet-David, Seneca, Plato, and many others challenged the way I thought about the world. Each book added another piece to the puzzle.',
+      'Over time, one belief became clear: knowledge only becomes valuable when it\u2019s put into practice.'
+    ],
+    'Knowledge only becomes valuable when it\u2019s put into practice.'
+  ],
+  ['Building', 'Chapter IV', 'Building Instead of Waiting',
+    [
+      'Eventually, learning wasn\u2019t enough. I wanted to create.',
+      'Photography became Geo Lenz Studio. A passion for collecting became Astral Collectionz. A problem I experienced as a collector became MyTCG Ledger.',
+      'Each project solved a different problem, but they all shared the same purpose: build something useful, keep improving it, and never compromise on quality.'
+    ],
+    'Build something useful, keep improving it, and never compromise on quality.'
+  ],
+  ['Northspire', 'Chapter V', 'Northspire',
+    [
+      'For a long time, I thought I was building separate businesses. Eventually I realized I was building one philosophy.',
+      'Northspire Ventures became the home for everything I believe in: Learn relentlessly. Build deliberately. Create lasting value. Think in decades, not quarters.',
+      'Northspire is still in its earliest chapter, and that\u2019s exactly where I want it to be. Every company, every lesson, and every challenge is another step toward something larger than any one project.',
+      'This isn\u2019t the story of a finished company. It\u2019s the story of a lifelong student who decided to become a builder.'
+    ],
+    'The story of a lifelong student who decided to become a builder.'
+  ]
 ];
 
 /* --- Section 7: Core values --- */
@@ -583,15 +710,58 @@ const VALUES = [
     g.appendChild(el);
   });
 
-  /* Timeline */
-  const tl = document.getElementById('timeline');
-  TIMELINE.forEach(item=>{
-    const el = document.createElement('div');
-    el.className = 'tl-item reveal' + (item[3]?' future':'');
-    el.innerHTML = '<div class="when">'+ esc(item[0]) +'</div>'+
-      '<h4>'+ esc(item[1]) +'</h4><p>'+ esc(item[2]) +'</p>';
-    tl.appendChild(el);
+  /* The Journey — progress rail + expanding chapter cards */
+  const rail = document.getElementById('rail');
+  const chapters = document.getElementById('chapters');
+
+  CHAPTERS.forEach((c, i) => {
+    const isStar = i === CHAPTERS.length - 1;
+
+    // Rail node
+    const node = document.createElement('button');
+    node.className = 'rail-node' + (isStar ? ' star' : '');
+    node.setAttribute('role', 'tab');
+    node.setAttribute('aria-label', 'Chapter ' + (i+1) + ': ' + c[2]);
+    node.innerHTML = '<span class="dot" aria-hidden="true"></span><span class="lbl">'+ esc(c[0]) +'</span>';
+    rail.appendChild(node);
+
+    // Chapter card
+    const card = document.createElement('article');
+    card.className = 'chapter';
+    const bodyHTML = c[3].map(p => '<p>'+ esc(p) +'</p>').join('') +
+                     (c[4] ? '<p class="quote">'+ esc(c[4]) +'</p>' : '');
+    card.innerHTML =
+      '<button class="chapter-head" aria-expanded="false">'+
+        '<span class="chapter-num">'+ esc(c[1].replace('Chapter ','')) +'</span>'+
+        '<span class="chapter-titles">'+
+          '<span class="ch">'+ esc(c[1]) +'</span>'+
+          '<h4>'+ esc(c[2]) +'</h4>'+
+        '</span>'+
+        '<svg class="chapter-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'+
+      '</button>'+
+      '<div class="chapter-body"><div class="chapter-body-inner"><div class="pad">'+ bodyHTML +'</div></div></div>';
+    chapters.appendChild(card);
+
+    // Open/close — toggles this chapter and syncs the rail highlight
+    const head = card.querySelector('.chapter-head');
+    const open = () => setOpen(i);
+    head.addEventListener('click', open);
+    node.addEventListener('click', () => { setOpen(i); card.scrollIntoView({behavior:'smooth', block:'center'}); });
   });
+
+  const cards = [...chapters.children];
+  const nodes = [...rail.children];
+  function setOpen(idx){
+    const alreadyOpen = cards[idx].classList.contains('open');
+    cards.forEach((card,i) => {
+      const isOpen = (i === idx) && !alreadyOpen;
+      card.classList.toggle('open', isOpen);
+      card.querySelector('.chapter-head').setAttribute('aria-expanded', isOpen);
+      nodes[i].classList.toggle('active', isOpen);
+    });
+  }
+  // Open the first chapter by default so the section isn't a row of closed bars
+  setOpen(0);
 
   /* Values */
   const v = document.getElementById('values');
