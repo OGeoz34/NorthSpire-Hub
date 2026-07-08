@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c10">
+<meta name="description" content="Northspire Investment Hub — a transparent, real-time log of the moves across stocks, crypto, AI, collectibles, and more.">
+<title>Investment Hub — Northspire Ventures</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   NORTHSPIRE — Investment Hub
+   Inherits the exact design tokens from the hub and founder pages.
+   ========================================================================== */
+:root{
+  --bg:#0a0c10; --surface:#10141b; --surface-2:#141a23;
+  --border:#1e2530; --border-lit:#2c3644;
+  --text:#e9ecf1; --muted:#8c95a3; --faint:#5b6472;
+  --accent:#a3c4dc; --accent-soft:rgba(163,196,220,.10); --glow:rgba(163,196,220,.07);
+  --up:#7fcf9f; --up-soft:rgba(127,207,159,.12);
+  --down:#e08a8a; --down-soft:rgba(224,138,138,.12);
+  --font-display:'Marcellus','Times New Roman',serif;
+  --font-body:'Albert Sans',-apple-system,'SF Pro Text',system-ui,sans-serif;
+  --radius:18px; --radius-sm:14px; --gutter:20px;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  --shadow-lift:0 2px 4px rgba(0,0,0,.4), 0 20px 48px rgba(0,0,0,.5);
+  --glass:rgba(20,26,35,.55); --maxw:920px;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font-body);
+  font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  min-height:100dvh; overflow-x:hidden;
+}
+/* Hero glow is wider than the viewport on phones; keep it from creating scroll */
+.hero{ overflow:visible; }
+.hero::before{ max-width:100vw; }
+::selection{ background:var(--accent); color:var(--bg); }
+a{ color:inherit; text-decoration:none; }
+#sky{ position:fixed; inset:0; z-index:-1; pointer-events:none; }
+
+.wrap{ width:100%; max-width:var(--maxw); margin:0 auto; padding:0 var(--gutter) calc(80px + env(safe-area-inset-bottom)); }
+
+/* ---- Back nav ---- */
+.topbar{ max-width:var(--maxw); margin:0 auto; padding:22px var(--gutter) 0; display:flex; align-items:center; justify-content:space-between; }
+.back{ display:inline-flex; align-items:center; gap:8px; font-size:13px; letter-spacing:.04em; color:var(--muted); transition:color .28s ease; }
+.back svg{ width:15px; height:15px; transition:transform .28s ease; }
+.back:hover{ color:var(--accent); } .back:hover svg{ transform:translateX(-3px); }
+.topbar .brand{ font-family:var(--font-display); font-size:13px; letter-spacing:.28em; text-transform:uppercase; color:var(--faint); }
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero{ text-align:center; padding:60px 8px 34px; position:relative; }
+.hero::before{ content:""; position:absolute; top:-40px; left:50%; width:480px; height:480px; transform:translateX(-50%); background:radial-gradient(closest-side,var(--glow),transparent 70%); pointer-events:none; }
+.hero .eyebrow{ font-size:11.5px; font-weight:600; letter-spacing:.34em; text-transform:uppercase; color:var(--accent); margin-bottom:18px; }
+.hero h1{ font-family:var(--font-display); font-weight:400; font-size:clamp(30px,7vw,46px); letter-spacing:.03em; margin-bottom:16px; }
+.hero p{ color:var(--muted); max-width:56ch; margin:0 auto; font-size:clamp(15px,2.3vw,17px); }
+
+/* ==========================================================================
+   SUMMARY STRIP  (aggregate stats)
+   ========================================================================== */
+.summary{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:38px; }
+.stat{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; text-align:center; }
+.stat .k{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:8px; }
+.stat .v{ font-family:var(--font-display); font-size:clamp(22px,4vw,28px); letter-spacing:.02em; }
+.stat .v.up{ color:var(--up); } .stat .v.down{ color:var(--down); }
+
+/* ==========================================================================
+   FILTERS
+   ========================================================================== */
+.filters{ display:flex; flex-wrap:wrap; gap:8px; margin:40px 0 20px; }
+.filter{
+  font-size:12.5px; letter-spacing:.04em; color:var(--muted);
+  background:var(--surface); border:1px solid var(--border); border-radius:20px;
+  padding:9px 16px; cursor:pointer; transition:border-color .25s ease, color .25s ease, background .25s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.filter:hover{ border-color:var(--border-lit); color:var(--text); }
+.filter.active{ color:var(--accent); border-color:rgba(163,196,220,.4); background:var(--accent-soft); }
+.filter:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* ==========================================================================
+   POSITION CARDS
+   ========================================================================== */
+.positions{ display:grid; gap:14px; }
+.position{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; box-shadow:var(--shadow);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease, box-shadow .3s ease, opacity .3s ease;
+}
+.position:hover{ transform:translateY(-2px); border-color:var(--border-lit); background:var(--surface-2); box-shadow:var(--shadow-lift); }
+.position.hide{ display:none; }
+
+/* Header row: asset + action + status */
+.pos-top{ display:flex; align-items:flex-start; gap:14px; margin-bottom:16px; }
+.pos-cat{
+  flex:none; width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
+  background:var(--accent-soft); border:1px solid rgba(163,196,220,.14);
+  font-size:20px;
+}
+.pos-id{ flex:1; min-width:0; }
+.pos-id h3{ font-family:var(--font-display); font-weight:400; font-size:19px; letter-spacing:.02em; }
+.pos-id .sub{ font-size:12.5px; color:var(--faint); margin-top:2px; letter-spacing:.04em; }
+.pos-tags{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex:none; }
+.badge{ font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; border-radius:20px; padding:4px 11px; white-space:nowrap; }
+.badge.buy{ color:var(--up); background:var(--up-soft); border:1px solid rgba(127,207,159,.25); }
+.badge.sell,.badge.trim{ color:var(--down); background:var(--down-soft); border:1px solid rgba(224,138,138,.25); }
+.badge.hold,.badge.watch{ color:var(--accent); background:var(--accent-soft); border:1px solid rgba(163,196,220,.25); }
+.badge.status{ color:var(--muted); border:1px solid var(--border-lit); }
+.badge.status.open{ color:var(--accent); border-color:rgba(163,196,220,.3); }
+
+/* Metrics grid (entry/target/size/P&L — any field optional) */
+.pos-metrics{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:14px; }
+.metric{ background:var(--surface); padding:12px 14px; }
+.position:hover .metric{ background:var(--surface-2); }
+.metric .mk{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:4px; }
+.metric .mv{ font-size:15px; font-variant-numeric:tabular-nums; }
+.metric .mv.up{ color:var(--up); } .metric .mv.down{ color:var(--down); }
+
+/* Thesis / note */
+.pos-note{ color:var(--muted); font-size:14px; line-height:1.6; }
+.pos-note .lbl{ color:var(--faint); font-size:11px; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:5px; }
+
+/* Conviction dots */
+.conv{ display:inline-flex; gap:3px; vertical-align:middle; margin-left:8px; }
+.conv i{ width:6px; height:6px; border-radius:50%; background:var(--border-lit); display:inline-block; }
+.conv i.on{ background:var(--accent); }
+
+/* Empty state */
+.empty{ text-align:center; color:var(--faint); padding:50px 20px; font-size:14px; }
+
+/* Disclaimer */
+.disclaimer{ margin-top:40px; padding:18px 20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--glass); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
+.disclaimer p{ color:var(--faint); font-size:12.5px; line-height:1.6; }
+
+footer{ margin-top:60px; text-align:center; color:var(--faint); font-size:12px; letter-spacing:.12em; }
+footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); opacity:.55; }
+
+/* Scroll reveal */
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
+.reveal.in{ opacity:1; transform:none; }
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .reveal{ opacity:1; transform:none; transition:none; }
+}
+
+@media (min-width:640px){
+  .summary{ grid-template-columns:repeat(4,1fr); }
+  .pos-metrics{ grid-template-columns:repeat(4,1fr); }
+}
+@media (min-width:720px){
+  :root{ --gutter:32px; }
+  .hero{ padding-top:80px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div class="topbar">
+  <a class="back" href="index.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+    <span>Back to Hub</span>
+  </a>
+  <span class="brand">Northspire</span>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow reveal">Northspire Investments</p>
+    <h1 class="reveal">The Investment Hub</h1>
+    <p class="reveal">A transparent, running log of the moves — across markets, collectibles, and emerging plays. Every position is dated and reasoned. Watch the thesis unfold in real time.</p>
+  </header>
+
+  <!-- Aggregate summary — computed from the data below -->
+  <div class="summary reveal" id="summary"></div>
+
+  <!-- Category filters -->
+  <div class="filters reveal" id="filters"></div>
+
+  <!-- Position cards -->
+  <div class="positions" id="positions"></div>
+
+  <div class="disclaimer reveal">
+    <p id="disclaimer-text"></p>
+  </div>
+
+  <footer class="reveal">
+    <div class="fm" aria-hidden="true"><svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 4 L27 21 L44 24 L27 27 L24 44 L21 27 L4 24 L21 21 Z"/></svg></div>
+    <p>NORTHSPIRE VENTURES</p>
+    <p id="year"></p>
+  </footer>
+
+</div>
+
+<script>
+/* ==========================================================================
+   NORTHSPIRE INVESTMENT HUB — Configuration
+   --------------------------------------------------------------------------
+   POST A NEW MOVE: copy one object in POSITIONS and edit it. That's it.
+
+   Fields (every field except category/asset/action is OPTIONAL — leave out
+   or set to '' anything you don't want shown publicly):
+     category : one of the CATEGORIES keys below (drives the icon + filter)
+     asset    : name/ticker, e.g. 'NVDA', 'Bitcoin', 'Charizard PSA 10'
+     sub      : optional subtitle, e.g. 'NVIDIA Corp' or 'Base Set'
+     action   : 'buy' | 'sell' | 'trim' | 'hold' | 'watch'  (colors the badge)
+     status   : 'open' | 'closed'  (optional)
+     date     : 'YYYY-MM-DD' (shown as the move date)
+     entry    : entry price/level, any string e.g. '$118.40'
+     target   : target/exit, e.g. '$180'
+     size     : position size — SHOW AS % OR $ OR LEAVE BLANK to hide.
+                Publishing raw dollar size is optional; '' hides the tile.
+     pl       : profit/loss — put a % like '+42%' or '$' or leave '' to hide.
+                A value starting with '-' shows red; '+' shows green.
+     conviction: 1–5 (optional dots)
+     note     : your thesis / reasoning (the important part)
+
+   To change the icons or add a category, edit CATEGORIES.
+   ========================================================================== */
+
+const CATEGORIES = {
+  stocks:  { label: 'Stocks',      icon: '\uD83D\uDCC8' },
+  crypto:  { label: 'Crypto',      icon: '\u20BF' },
+  ai:      { label: 'AI',          icon: '\u25C8' },
+  pokemon: { label: 'Pok\u00E9mon',icon: '\u25C6' },
+  sports:  { label: 'Sports',      icon: '\uD83C\uDFC8' },
+  yugioh:  { label: 'Yu-Gi-Oh!',   icon: '\u2726' },
+  other:   { label: 'Other Plays', icon: '\u2699' }
+};
+
+/* --- YOUR MOVES. Newest first looks best. All example data — edit freely. --- */
+const POSITIONS = [
+  {
+    category:'stocks', asset:'NVDA', sub:'NVIDIA Corp',
+    action:'buy', status:'open', date:'2026-06-18',
+    entry:'$118.40', target:'$180', size:'', pl:'+31%', conviction:5,
+    note:'Core long-term AI infrastructure position. Adding on weakness; thesis is multi-year compute demand, not a trade.'
+  },
+  {
+    category:'crypto', asset:'Bitcoin', sub:'BTC',
+    action:'hold', status:'open', date:'2026-05-02',
+    entry:'$61,200', target:'—', size:'', pl:'+18%', conviction:4,
+    note:'Long-term store-of-value allocation. Not trading the swings — holding through the cycle.'
+  },
+  {
+    category:'pokemon', asset:'Charizard', sub:'Base Set · PSA 9',
+    action:'buy', status:'open', date:'2026-04-11',
+    entry:'$2,400', target:'$4,000', size:'', pl:'+12%', conviction:4,
+    note:'Blue-chip collectible. Grail card with durable demand; patience play, holding for years not months.'
+  },
+  {
+    category:'ai', asset:'Compute / Infra basket', sub:'Private thesis',
+    action:'watch', status:'open', date:'2026-06-30',
+    entry:'—', target:'—', size:'', pl:'', conviction:3,
+    note:'Tracking the picks-and-shovels layer of AI — energy, data centers, networking. Building conviction before committing.'
+  }
+];
+
+/* Optional: your public note about what these numbers mean. */
+const DISCLAIMER = 'This is a personal log of my own positions, shared for transparency \u2014 not financial advice or a recommendation to buy or sell anything. I share reasoning, not tips. Do your own research and consult a licensed advisor before making any investment. Figures are approximate and may be out of date.';
+
+/* ==========================================================================
+   Renderer — you shouldn't need to edit below this line.
+   ========================================================================== */
+(function render(){
+  const posEl = document.getElementById('positions');
+  const filtEl = document.getElementById('filters');
+  document.getElementById('disclaimer-text').textContent = DISCLAIMER;
+  document.getElementById('year').textContent = '\u00A9 ' + new Date().getFullYear() + ' \u00B7 Northspire Investment Hub';
+
+  /* Summary stats */
+  const open = POSITIONS.filter(p => p.status !== 'closed').length;
+  const cats = new Set(POSITIONS.map(p => p.category)).size;
+  const withPL = POSITIONS.filter(p => /^[+\-]?\d/.test((p.pl||'').replace(/[$,%\s]/g,'')) && p.pl.includes('%'));
+  const avg = withPL.length
+    ? Math.round(withPL.reduce((s,p)=>s+parseFloat(p.pl.replace(/[%+\s]/g,'')),0)/withPL.length)
+    : null;
+  const summary = [
+    ['Positions', String(POSITIONS.length), ''],
+    ['Open', String(open), ''],
+    ['Categories', String(cats), ''],
+    ['Avg. Return', avg===null?'—':(avg>=0?'+':'')+avg+'%', avg===null?'':(avg>=0?'up':'down')]
+  ];
+  document.getElementById('summary').innerHTML = summary.map(s =>
+    '<div class="stat"><div class="k">'+esc(s[0])+'</div><div class="v '+s[2]+'">'+esc(s[1])+'</div></div>'
+  ).join('');
+
+  /* Filters */
+  const used = [...new Set(POSITIONS.map(p=>p.category))];
+  const filters = ['all', ...used];
+  filtEl.innerHTML = filters.map((f,i)=>{
+    const lbl = f==='all' ? 'All' : (CATEGORIES[f]?.label || f);
+    return '<button class="filter'+(i===0?' active':'')+'" data-f="'+esc(f)+'">'+esc(lbl)+'</button>';
+  }).join('');
+
+  /* Cards */
+  posEl.innerHTML = POSITIONS.map(p => card(p)).join('') ||
+    '<div class="empty">No positions logged yet.</div>';
+
+  /* Filter behaviour */
+  filtEl.addEventListener('click', e=>{
+    const btn = e.target.closest('.filter'); if(!btn) return;
+    filtEl.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.f;
+    posEl.querySelectorAll('.position').forEach(c=>{
+      c.classList.toggle('hide', f!=='all' && c.dataset.cat!==f);
+    });
+  });
+
+  /* Scroll reveal */
+  const io = ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+    ? new IntersectionObserver((es)=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); }}), {threshold:.1, rootMargin:'0px 0px -6% 0px'})
+    : null;
+  document.querySelectorAll('.reveal, .position').forEach((el,i)=>{
+    el.classList.add('reveal');
+    if(io){ el.style.transitionDelay = Math.min(i*40,240)+'ms'; io.observe(el); }
+    else el.classList.add('in');
+  });
+
+  function card(p){
+    const c = CATEGORIES[p.category] || CATEGORIES.other;
+    const metrics = [
+      ['Entry', p.entry],
+      ['Target', p.target],
+      ['Size', p.size],
+      ['P&L', p.pl]
+    ].filter(m => m[1] && String(m[1]).trim());
+    const metricHTML = metrics.map(m=>{
+      const isPL = m[0]==='P&L';
+      const dir = isPL ? (String(m[1]).trim().startsWith('-')?' down':(String(m[1]).trim().startsWith('+')?' up':'')) : '';
+      return '<div class="metric"><div class="mk">'+esc(m[0])+'</div><div class="mv'+dir+'">'+esc(m[1])+'</div></div>';
+    }).join('');
+
+    const conv = p.conviction ? '<span class="conv" title="Conviction '+p.conviction+'/5" aria-label="Conviction '+p.conviction+' of 5">'+
+      [1,2,3,4,5].map(n=>'<i class="'+(n<=p.conviction?'on':'')+'"></i>').join('')+'</span>' : '';
+
+    const actionCls = ({buy:'buy',sell:'sell',trim:'trim',hold:'hold',watch:'watch'})[p.action] || 'hold';
+    const statusBadge = p.status ? '<span class="badge status '+esc(p.status)+'">'+esc(p.status)+'</span>' : '';
+    const dateStr = p.date ? fmtDate(p.date) : '';
+
+    return ''+
+    '<article class="position" data-cat="'+esc(p.category)+'">'+
+      '<div class="pos-top">'+
+        '<span class="pos-cat" aria-hidden="true">'+ c.icon +'</span>'+
+        '<div class="pos-id">'+
+          '<h3>'+esc(p.asset)+ conv +'</h3>'+
+          '<div class="sub">'+esc(c.label)+(p.sub?' \u00B7 '+esc(p.sub):'')+(dateStr?' \u00B7 '+dateStr:'')+'</div>'+
+        '</div>'+
+        '<div class="pos-tags">'+
+          (p.action?'<span class="badge '+actionCls+'">'+esc(p.action)+'</span>':'')+
+          statusBadge+
+        '</div>'+
+      '</div>'+
+      (metricHTML?'<div class="pos-metrics">'+metricHTML+'</div>':'')+
+      (p.note?'<div class="pos-note"><span class="lbl">Thesis</span>'+esc(p.note)+'</div>':'')+
+    '</article>';
+  }
+
+  function fmtDate(s){
+    const d = new Date(s+'T00:00:00');
+    if(isNaN(d)) return esc(s);
+    return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  }
+  function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+})();
+
+/* Starfield — identical engine to the other pages. */
+(function starfield(){
+  const canvas=document.getElementById('sky'); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let stars=[],W,H,raf=0,last=0;
+  function make(){
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    W=window.innerWidth; H=window.innerHeight; canvas.width=W*dpr; canvas.height=H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const count=Math.min(160,Math.round((W*H)/9000));
+    stars=Array.from({length:count},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+0.3,s:Math.random()*12+6,p:Math.random()*Math.PI*2,t:Math.random()*0.015+0.004}));
+  }
+  function frame(now){
+    const tnow=now||performance.now(); const dt=last?Math.min((tnow-last)/1000,0.05):0.016; last=tnow;
+    ctx.clearRect(0,0,W,H);
+    for(const st of stars){
+      st.p+=st.t;
+      if(!reduced){ st.y-=st.s*dt; if(st.y<-2){ st.y=H+2; st.x=Math.random()*W; } }
+      ctx.globalAlpha=Math.max(0.08,0.35+Math.sin(st.p)*0.25);
+      ctx.fillStyle=st.r>1?'#a3c4dc':'#e9ecf1';
+      ctx.beginPath(); ctx.arc(st.x,st.y,st.r,0,6.2832); ctx.fill();
+    }
+    ctx.globalAlpha=1; if(!reduced) raf=requestAnimationFrame(frame);
+  }
+  make(); frame();
+  window.addEventListener('resize',()=>{ cancelAnimationFrame(raf); make(); frame(); });
+  document.addEventListener('visibilitychange',()=>{ cancelAnimationFrame(raf); if(!document.hidden&&!reduced){ last=0; frame(); } });
+})();
+</script>
+
+</body>
+</html>

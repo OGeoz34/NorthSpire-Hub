@@ -541,6 +541,7 @@ const ICONS = {
   linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.2 10.5V16M8.2 8.1v.1M12 16v-3.2a2 2 0 0 1 4 0V16"/></svg>',
   facebook: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.8 8.2h2.4V4.8h-2.4a3.8 3.8 0 0 0-3.8 3.8v2.2H8.6v3.2H11v6.2h3.2V14h2.6l.6-3.2h-3.2V8.8a.6.6 0 0 1 .6-.6Z"/></svg>',
   founder:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1"/></svg>',
+  invest:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="m7 14 3-3.5 3 2 5-6"/><path d="M18 6.5h2.5V9"/></svg>',
   arrow:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
 };
 
@@ -591,6 +592,18 @@ const HUB = {
           actions: [
             { icon: 'app', title: 'Open the app', href: 'https://mytcgledger.vercel.app/' }
           ]
+        }
+      ]
+    },
+    {
+      label: 'Investments',
+      links: [
+        {
+          icon: 'invest',
+          spotlight: true,
+          title: 'The Investment Hub',
+          desc: 'A transparent log of the moves — stocks, crypto, AI, collectibles, and more.',
+          href: 'investments.html'
         }
       ]
     },
