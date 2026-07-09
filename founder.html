@@ -376,29 +376,13 @@ section{ margin-top:120px; }
 .eco-card.linked:hover .eco-arrow{ transform:translateX(4px); color:var(--accent); }
 .eco-card.linked:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
-/* Mobile: two clean rows so the description gets full width (no one-word-per-line)
-   and the badge sits tidily beneath instead of squeezing the text. */
+/* Mobile: keep the single-row layout; just tighten padding and let the
+   description wrap naturally. Badge pushed right, snug to the arrow. */
 @media (max-width:560px){
-  .eco-card{
-    display:grid;
-    grid-template-columns:auto 1fr;
-    grid-template-areas:
-      "icon text"
-      "meta meta";
-    align-items:center;
-    gap:12px 14px;
-    padding:16px;
-  }
-  .eco-card .badge{ grid-area:icon; }
-  .eco-card .txt{ grid-area:text; }
+  .eco-card{ padding:16px; gap:12px; }
   .eco-card .txt p{ font-size:12.5px; line-height:1.5; }
-  /* Second row: status badge + arrow, aligned right, snug */
-  .eco-card .status{
-    grid-area:meta; justify-self:start; margin:0;
-  }
-  .eco-card .eco-arrow{
-    grid-area:meta; justify-self:end; margin:0; align-self:center;
-  }
+  .eco-card .status{ margin-left:auto; }
+  .eco-card .eco-arrow{ margin-left:8px; }
 }
 
 /* ==========================================================================
