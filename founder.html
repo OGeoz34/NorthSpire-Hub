@@ -376,12 +376,29 @@ section{ margin-top:120px; }
 .eco-card.linked:hover .eco-arrow{ transform:translateX(4px); color:var(--accent); }
 .eco-card.linked:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
-/* Very narrow phones: let the status pill drop under the text instead of crowding */
-@media (max-width:480px){
-  .eco-card{ flex-wrap:wrap; }
-  .eco-card .txt{ min-width:0; }
-  .eco-card .status{ margin-left:62px; }
-  .eco-card .eco-arrow{ margin-left:auto; }
+/* Mobile: two clean rows so the description gets full width (no one-word-per-line)
+   and the badge sits tidily beneath instead of squeezing the text. */
+@media (max-width:560px){
+  .eco-card{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    grid-template-areas:
+      "icon text"
+      "meta meta";
+    align-items:center;
+    gap:12px 14px;
+    padding:16px;
+  }
+  .eco-card .badge{ grid-area:icon; }
+  .eco-card .txt{ grid-area:text; }
+  .eco-card .txt p{ font-size:12.5px; line-height:1.5; }
+  /* Second row: status badge + arrow, aligned right, snug */
+  .eco-card .status{
+    grid-area:meta; justify-self:start; margin:0;
+  }
+  .eco-card .eco-arrow{
+    grid-area:meta; justify-self:end; margin:0; align-self:center;
+  }
 }
 
 /* ==========================================================================
