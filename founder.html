@@ -362,8 +362,10 @@ section{ margin-top:120px; }
 .chapter.open .chapter-body{ grid-template-rows:1fr; }
 .chapter-body-inner{ overflow:hidden; }
 .chapter-body-inner .pad{ padding:0 20px 24px 76px; }
-.chapter-body-inner p{ color:var(--muted); font-size:15px; line-height:1.7; }
-.chapter-body-inner p + p{ margin-top:12px; }
+.chapter-body-inner p{ color:var(--muted); font-size:15px; line-height:1.72; }
+.chapter-body-inner p + p{ margin-top:20px; }
+/* Stacked emphasis lines — each beat on its own line with breathing room */
+.chapter-body-inner p .br{ display:block; height:9px; }
 .chapter-body-inner .quote{
   font-family:var(--font-display); color:var(--text); font-size:17px; line-height:1.5;
   border-left:2px solid var(--accent); padding-left:18px; margin-top:18px;
@@ -641,54 +643,79 @@ const COMPANIES = [
 const CHAPTERS = [
   ['Searching', 'Chapter I', 'Finding My Path',
     [
-      'If you look at Northspire today, it might seem like the story began with a company. It didn\u2019t. It began with a young man who thought he had his future figured out.',
-      'When I started on the pre-med track at the University at Albany, I believed I knew exactly where my life was headed. Like many people, I assumed success came from following a straight line. But life has a way of challenging the plans we make for ourselves.',
+      'If you look at Northspire today, it might seem like the story began with a company.',
+      'It didn\u2019t.',
+      'It began with a young man who thought he had his future figured out.',
+      'When I started on the pre-med track at the University at Albany, I believed I knew exactly where my life was headed. Like many people, I assumed success came from following a straight line.',
+      'But life has a way of challenging the plans we make for ourselves.',
       'Instead of forcing myself down a path that no longer felt right, I chose something much harder: I gave myself permission to question it.',
       'That decision led me into healthcare. I became an EMT, a phlebotomist, and an EKG technician before earning my nursing degree. Each role taught me something different \u2014 not just about medicine, but about responsibility, service, discipline, and the privilege of helping people during some of the most important moments of their lives.',
-      'Looking back, I realize I wasn\u2019t changing directions. I was collecting experiences that would shape the way I think, the way I lead, and eventually, the way I build.'
+      'Looking back, I realize I wasn\u2019t changing directions.\nI was collecting experiences that would shape the way I think, the way I lead, and eventually, the way I build.'
     ],
     'Sometimes finding your path isn\u2019t about choosing one direction. It\u2019s about having the courage to keep moving until the right one reveals itself.'
   ],
   ['Experience', 'Chapter II', 'Learning Through Experience',
     [
-      'For a while, I thought healthcare was simply the profession I had chosen. Looking back, I realize it became something much greater. It became the standard for how I approach everything else.',
-      'Working as an EMT, a phlebotomist, an EKG technician, and eventually as a Registered Nurse taught me that excellence isn\u2019t built through big moments. It\u2019s built through thousands of small decisions that most people never notice \u2014 showing up prepared, paying attention, taking responsibility, remaining calm when others can\u2019t, and never stopping your education.',
-      'Those lessons never stayed inside the hospital. They followed me everywhere \u2014 into photography, into software, into business, into every company I\u2019ve built.',
-      'Because whether someone trusts you with their health, their memories, their investments, or the software they rely on every day, the responsibility is the same. If someone places their trust in you, they deserve your best.'
+      'For a while, I thought healthcare was simply the profession I had chosen.',
+      'Looking back, I realize it became something much greater.',
+      'It became the standard for how I approach everything else.',
+      'Working as an EMT, a phlebotomist, an EKG technician, and eventually as a Registered Nurse taught me that excellence isn\u2019t built through big moments.\nIt\u2019s built through thousands of small decisions that most people never notice.',
+      'Showing up prepared.\nPaying attention.\nTaking responsibility.\nRemaining calm when others can\u2019t.\nNever stopping your education.',
+      'Those lessons never stayed inside the hospital.\nThey followed me everywhere.',
+      'Into photography.\nInto software.\nInto business.\nInto every company I\u2019ve built.',
+      'Because whether someone trusts you with their health, their memories, their investments, or the software they rely on every day \u2014 the responsibility is the same.',
+      'If someone places their trust in you, they deserve your best.'
     ],
     'The profession changed. The standard never did.'
   ],
   ['Reading', 'Chapter III', 'Books Became My Second Education',
     [
-      'Some people unwind by watching television. I found myself reaching for books. What started as curiosity slowly became a habit, and eventually, a way of life.',
-      'Outside of work, I spent countless hours reading and listening \u2014 business, psychology, leadership, philosophy, communication, investing, history, technology, human behavior. I wasn\u2019t trying to collect information. I was trying to understand the world from the perspective of people who had spent decades mastering their craft.',
-      'Jordan Peterson challenged me to take responsibility. Robert Greene taught me to study human nature. James Clear showed me that small habits shape extraordinary outcomes. Stephen Covey changed how I thought about character and leadership. Chris Voss taught me that communication is often more powerful than persuasion. Peter Thiel challenged conventional thinking. Seneca and Plato reminded me that many of the questions we struggle with today have been asked for thousands of years.',
-      'No single book changed my life. It was the accumulation of ideas that did. And over time I arrived at a principle that now sits behind everything I build: knowledge isn\u2019t valuable because you possess it \u2014 it\u2019s valuable because you do something with it.',
-      'Reading taught me to think. Building taught me to apply what I learned. Together, they became the foundation of Northspire. Every book gave me knowledge; building gave that knowledge a purpose.',
+      'Some people unwind by watching television.\nI found myself reaching for books.\nWhat started as curiosity slowly became a habit, and eventually, a way of life.',
+      'Outside of work, I spent countless hours reading and listening \u2014 business, psychology, leadership, philosophy, communication, investing, history, technology, and human behavior. I wasn\u2019t trying to collect information. I was trying to understand the world from the perspective of people who had spent decades mastering their craft.',
+      'Each author offered something different.',
+      'Jordan Peterson challenged me to take responsibility.\nRobert Greene taught me to study human nature.\nJames Clear showed me that small habits shape extraordinary outcomes.\nStephen Covey changed the way I thought about character and leadership.\nChris Voss taught me that communication is often more powerful than persuasion.\nPeter Thiel challenged conventional thinking.\nSeneca and Plato reminded me that many of the questions we struggle with today have been asked for thousands of years.',
+      'No single book changed my life.\nIt was the accumulation of ideas that did.',
+      'Over time, I arrived at a principle that now sits behind everything I build: knowledge isn\u2019t valuable because you possess it. It\u2019s valuable because you do something with it.',
+      'Reading taught me to think.\nBuilding taught me to apply what I learned.\nTogether, they became the foundation of Northspire.',
+      'Every book gave me knowledge. Building gave that knowledge a purpose.',
       'I never believed wisdom belonged to one profession. Some of my greatest teachers were entrepreneurs; others were philosophers who lived thousands of years ago. Some built companies, some led nations, some simply learned to think more clearly. Each one offered a different piece of the same puzzle \u2014 and the more perspectives I explored, the more I saw that excellence leaves clues.',
-      'The principles that build a great business are often the same ones that build a meaningful life: discipline, patience, curiosity, integrity, and a commitment to continuous improvement. That\u2019s why I never stopped reading. I wasn\u2019t looking for answers. I was learning how to ask better questions.'
+      'The principles that build a great business are often the same ones that build a meaningful life: discipline, patience, curiosity, integrity, and a commitment to continuous improvement.',
+      'That\u2019s why I never stopped reading.\nI wasn\u2019t looking for answers.\nI was learning how to ask better questions.'
     ],
     'I wasn\u2019t looking for answers. I was learning how to ask better questions.'
   ],
   ['Building', 'Chapter IV', 'Building Instead of Waiting',
     [
-      'There came a point where learning alone wasn\u2019t enough. For years, I had filled notebooks with ideas, highlighted pages in books, and studied the people who built things that stood the test of time. But eventually I realized something that changed how I looked at knowledge: ideas are only valuable when they become reality.',
-      'So I stopped asking \u201cWhat should I learn next?\u201d and started asking \u201cWhat can I build?\u201d',
-      'The first answer was photography. Geo Lenz Studio became a way to preserve moments people would remember for the rest of their lives.',
-      'Then came Astral Collectionz. What started as a personal passion for collecting grew into a business built on patience, authenticity, and a long-term view of value \u2014 the kind of company I would trust as a collector myself.',
-      'Then came MyTCG Ledger. After years of collecting, I was frustrated by the lack of tools that truly understood collectors. Instead of waiting for someone else to solve the problem, I built the platform I wished existed.',
-      'Looking back, I wasn\u2019t building random businesses. I was building solutions to problems I genuinely cared about. Each company serves a different purpose and solves a different problem, but they\u2019re all guided by the same philosophy: build something useful, obsess over the details, keep improving, earn trust through the quality of your work, and never stop building.'
+      'There came a point where learning alone wasn\u2019t enough.',
+      'For years, I had filled notebooks with ideas, highlighted pages in books, and studied the people who built things that stood the test of time. But eventually I realized something that changed how I looked at knowledge.',
+      'Ideas are only valuable when they become reality.',
+      'So I stopped asking, \u201cWhat should I learn next?\u201d\nAnd started asking, \u201cWhat can I build?\u201d',
+      'The first answer was photography.\nGeo Lenz Studio became a way to preserve moments that people would remember for the rest of their lives.',
+      'Then came Astral Collectionz.\nWhat started as a personal passion for collecting grew into a business built on patience, authenticity, and a long-term view of value \u2014 the kind of company I would trust as a collector myself.',
+      'Then came MyTCG Ledger.\nAfter years of collecting, I became frustrated by the lack of tools that truly understood collectors. Instead of waiting for someone else to solve the problem, I built the platform I wished existed.',
+      'Looking back, I wasn\u2019t building random businesses.\nI was building solutions to problems I genuinely cared about.',
+      'Each company serves a different purpose.\nEach solves a different problem.\nBut they\u2019re all guided by the same philosophy:',
+      'Build something useful.\nObsess over the details.\nKeep improving.\nEarn trust through the quality of your work.\nNever stop building.'
     ],
     'The goal was never to build more companies. The goal was to build better ones.'
   ],
   ['Northspire', 'Chapter V', 'Northspire',
     [
-      'When people look at Northspire, they see a collection of businesses. I see something very different. I see every lesson I\u2019ve learned, every risk I\u2019ve taken, every book I\u2019ve read, every person who\u2019s influenced me, and every experience that\u2019s shaped the way I think \u2014 all connected by one purpose.',
-      'For a long time, I believed I was building separate things. A photography studio. A collectibles company. Software for collectors. Future ideas waiting for the right moment. Eventually I realized none of them were separate \u2014 they were all expressions of the same philosophy.',
-      'A belief that the best things in life are built with patience. That trust is earned through consistency. That learning should never stop. And that if you\u2019re fortunate enough to create something meaningful, you have a responsibility to leave it better than you found it.',
-      'Northspire became the home for that philosophy \u2014 not because I wanted another business, but because I wanted a place where every future idea could grow from the same foundation. I\u2019m not trying to build the biggest company. I\u2019m trying to build companies people can trust, that solve real problems, and that are still creating value decades from now.',
-      'Northspire is still young. Most of what I dream about hasn\u2019t been built yet. There will be successes. There will be failures. There will be ideas that never leave the drawing board, and others that grow beyond anything I imagined. That\u2019s part of the journey. What won\u2019t change is the reason I started: to keep learning, to keep building, and to spend my life creating things that are genuinely useful to other people.',
-      'If you\u2019re reading this today, you\u2019re seeing Northspire at the very beginning. I hope that years from now you\u2019ll come back, look at how far we\u2019ve come, and know you were here when the foundation was still being laid. Thank you for taking the time to understand the vision. Welcome to the journey.'
+      'When people look at Northspire, they see a collection of businesses.',
+      'I see something very different.',
+      'I see every lesson I\u2019ve learned, every risk I\u2019ve taken, every book I\u2019ve read, every person who\u2019s influenced me, and every experience that\u2019s shaped the way I think \u2014 all connected by one purpose.',
+      'For a long time, I believed I was building separate things.',
+      'A photography studio.\nA collectibles company.\nSoftware for collectors.\nFuture ideas waiting for the right moment.',
+      'Eventually I realized none of them were separate.\nThey were all expressions of the same philosophy.',
+      'A belief that the best things in life are built with patience.\nThat trust is earned through consistency.\nThat learning should never stop.\nAnd that if you\u2019re fortunate enough to create something meaningful, you have a responsibility to leave it better than you found it.',
+      'Northspire became the home for that philosophy.\nNot because I wanted another business.\nBecause I wanted a place where every future idea could grow from the same foundation.',
+      'I\u2019m not trying to build the biggest company.\nI\u2019m trying to build companies that people can trust.\nCompanies that solve real problems.\nCompanies that are still creating value decades from now.',
+      'Northspire is still young.\nMost of what I dream about hasn\u2019t been built yet.',
+      'There will be successes.\nThere will be failures.\nThere will be ideas that never leave the drawing board and others that grow beyond anything I imagined.',
+      'That\u2019s part of the journey.',
+      'What won\u2019t change is the reason I started.\nTo keep learning.\nTo keep building.\nAnd to spend my life creating things that are genuinely useful to other people.',
+      'If you\u2019re reading this today, you\u2019re seeing Northspire at the very beginning. I hope that years from now you\u2019ll be able to come back, look at how far we\u2019ve come, and know you were here when the foundation was still being laid.',
+      'Thank you for taking the time to understand the vision.\nWelcome to the journey.'
     ],
     'Northspire isn\u2019t the destination. It\u2019s the commitment to keep building.'
   ]
@@ -755,7 +782,7 @@ const VALUES = [
     // Chapter card
     const card = document.createElement('article');
     card.className = 'chapter';
-    const bodyHTML = c[3].map(p => '<p>'+ esc(p) +'</p>').join('') +
+    const bodyHTML = c[3].map(p => '<p>'+ esc(p).replace(/\n/g,'<span class="br"></span>') +'</p>').join('') +
                      (c[4] ? '<p class="quote">'+ esc(c[4]) +'</p>' : '');
     card.innerHTML =
       '<button class="chapter-head" aria-expanded="false">'+
