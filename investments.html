@@ -135,6 +135,55 @@ a{ color:inherit; text-decoration:none; }
 /* Empty state */
 .empty{ text-align:center; color:var(--faint); padding:50px 20px; font-size:14px; }
 
+/* Receipt line — the timestamped "I called it" proof */
+.receipt{
+  display:flex; align-items:center; gap:8px;
+  font-size:12.5px; color:var(--muted); margin-bottom:14px;
+  padding:9px 12px; border-radius:10px;
+  background:var(--accent-soft); border:1px solid rgba(163,196,220,.14);
+}
+.receipt strong{ color:var(--text); font-weight:600; }
+.receipt-dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px rgba(163,196,220,.6); flex:none; }
+
+/* ==========================================================================
+   LAUNDROMAT GOAL BAR
+   ========================================================================== */
+.goal-wrap{ margin-top:40px; }
+.goal-card{
+  background:linear-gradient(180deg, var(--surface-2), var(--surface));
+  border:1px solid var(--border-lit); border-radius:var(--radius);
+  padding:clamp(22px,4vw,32px); box-shadow:var(--shadow-lift); position:relative; overflow:hidden;
+}
+.goal-card::before{
+  content:""; position:absolute; top:-80px; right:-40px; width:280px; height:280px;
+  background:radial-gradient(closest-side, var(--glow), transparent 70%); pointer-events:none;
+}
+.goal-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; }
+.goal-eyebrow{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.goal-title{ font-family:var(--font-display); font-weight:400; font-size:clamp(22px,4vw,28px); letter-spacing:.02em; }
+.goal-sub{ color:var(--muted); font-size:13.5px; margin-top:4px; }
+.goal-pct{ font-family:var(--font-display); font-size:clamp(26px,5vw,36px); color:var(--accent); font-variant-numeric:tabular-nums; flex:none; }
+
+/* Track + fill */
+.goal-track{ position:relative; height:14px; border-radius:20px; background:var(--bg); border:1px solid var(--border); overflow:hidden; }
+.goal-fill{
+  height:100%; border-radius:20px;
+  background:linear-gradient(90deg, rgba(163,196,220,.55), var(--accent));
+  box-shadow:0 0 16px rgba(163,196,220,.4); transition:none;
+}
+.goal-mile{ position:absolute; top:0; bottom:0; width:1px; background:var(--border-lit); transform:translateX(-.5px); }
+.goal-mile:last-child{ background:transparent; }
+
+/* Figures row */
+.goal-figures{ display:flex; justify-content:space-between; gap:12px; margin-top:18px; }
+.goal-figures > div{ display:flex; flex-direction:column; gap:3px; }
+.goal-figures .gf-mid{ text-align:center; }
+.goal-figures .gf-end{ text-align:right; }
+.gf-k{ font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
+.gf-v{ font-family:var(--font-display); font-size:clamp(17px,3vw,22px); font-variant-numeric:tabular-nums; letter-spacing:.02em; }
+.gf-v.up{ color:var(--up); }
+.goal-note{ color:var(--muted); font-size:13.5px; line-height:1.6; margin-top:20px; padding-top:18px; border-top:1px solid var(--border); }
+
 /* Disclaimer */
 .disclaimer{ margin-top:40px; padding:18px 20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--glass); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
 .disclaimer p{ color:var(--faint); font-size:12.5px; line-height:1.6; }
@@ -190,6 +239,9 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
   <!-- Position cards -->
   <div class="positions" id="positions"></div>
 
+  <!-- The Laundromat goal — animated progress toward $1M -->
+  <div class="goal-wrap reveal" id="goal"></div>
+
   <div class="disclaimer reveal">
     <p id="disclaimer-text"></p>
   </div>
@@ -206,68 +258,95 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
 /* ==========================================================================
    NORTHSPIRE INVESTMENT HUB — Configuration
    --------------------------------------------------------------------------
-   POST A NEW MOVE: copy one object in POSITIONS and edit it. That's it.
+   THIS IS YOUR CONTROL PANEL. Everything is a plain value you edit.
 
-   Fields (every field except category/asset/action is OPTIONAL — leave out
-   or set to '' anything you don't want shown publicly):
-     category : one of the CATEGORIES keys below (drives the icon + filter)
-     asset    : name/ticker, e.g. 'NVDA', 'Bitcoin', 'Charizard PSA 10'
-     sub      : optional subtitle, e.g. 'NVIDIA Corp' or 'Base Set'
-     action   : 'buy' | 'sell' | 'trim' | 'hold' | 'watch'  (colors the badge)
-     status   : 'open' | 'closed'  (optional)
-     date     : 'YYYY-MM-DD' (shown as the move date)
-     entry    : entry price/level, any string e.g. '$118.40'
-     target   : target/exit, e.g. '$180'
-     size     : position size — SHOW AS % OR $ OR LEAVE BLANK to hide.
-                Publishing raw dollar size is optional; '' hides the tile.
-     pl       : profit/loss — put a % like '+42%' or '$' or leave '' to hide.
-                A value starting with '-' shows red; '+' shows green.
-     conviction: 1–5 (optional dots)
-     note     : your thesis / reasoning (the important part)
+   THE "RECEIPT" MODEL for each position:
+     - purchaseDate  = the day you called it ("proof I said this before it moved")
+     - purchasePrice = what you paid that day (your cost basis / the receipt)
+     - currentPrice  = today's price (update when you refresh the page)
+   The card auto-calculates the gain/loss % between purchase and current and
+   colors it green/red. Leave currentPrice '' to show the call with no P&L yet.
 
-   To change the icons or add a category, edit CATEGORIES.
+   POST A NEW MOVE: copy one { } block in POSITIONS and edit the fields.
+   HIDE a field: set it to '' (empty). Nothing is hardcoded or guessed.
+
+   Fields:
+     category      one of the CATEGORIES keys (icon + filter)
+     asset         name/ticker, e.g. 'SOL', 'HAPI', 'Moonbreon'
+     sub           subtitle, e.g. 'Solana' or 'Umbreon VMAX Alt Art 215 / PSA 10'
+     action        'buy' | 'sell' | 'trim' | 'hold' | 'watch'  (badge color)
+     status        'open' | 'closed'
+     purchaseDate  'YYYY-MM-DD'   <- the receipt date
+     purchasePrice e.g. '$81.00'  <- what you paid  (blank = accumulating)
+     currentPrice  e.g. '$92.00'  <- today (blank hides P&L)
+     target        optional goal price, e.g. '$300'
+     conviction    1-5 (optional dots)
+     note          your thesis / why
    ========================================================================== */
 
 const CATEGORIES = {
   stocks:  { label: 'Stocks',      icon: '\uD83D\uDCC8' },
-  crypto:  { label: 'Crypto',      icon: '\u20BF' },
-  ai:      { label: 'AI',          icon: '\u25C8' },
+  crypto:  { label: 'Crypto',      icon: '\u25C8' },
+  ai:      { label: 'AI',          icon: '\u2726' },
   pokemon: { label: 'Pok\u00E9mon',icon: '\u25C6' },
-  sports:  { label: 'Sports',      icon: '\uD83C\uDFC8' },
-  yugioh:  { label: 'Yu-Gi-Oh!',   icon: '\u2726' },
-  other:   { label: 'Other Plays', icon: '\u2699' }
+  sports:  { label: 'Sports',      icon: '\uD83C\uDFC0' },
+  yugioh:  { label: 'Yu-Gi-Oh!',   icon: '\u2B22' },
+  other:   { label: 'Power Plays', icon: '\u2699' }
 };
 
-/* --- YOUR MOVES. Newest first looks best. All example data — edit freely. --- */
+/* ---- YOUR MOVES. Fill purchasePrice with what YOU actually paid.
+        purchaseDate is set to today as your timestamped receipt. ---- */
 const POSITIONS = [
   {
-    category:'stocks', asset:'NVDA', sub:'NVIDIA Corp',
-    action:'buy', status:'open', date:'2026-06-18',
-    entry:'$118.40', target:'$180', size:'', pl:'+31%', conviction:5,
-    note:'Core long-term AI infrastructure position. Adding on weakness; thesis is multi-year compute demand, not a trade.'
+    category:'crypto', asset:'SOL', sub:'Solana',
+    action:'buy', status:'open',
+    purchaseDate:'2026-07-07',
+    purchasePrice:'',            // <- FILL IN what you paid per SOL
+    currentPrice:'$81.00',       // current market (edit to refresh)
+    target:'$300', conviction:5,
+    note:'High-throughput layer-1 with real on-chain activity and growing institutional interest. A long-term conviction hold, not a trade.'
   },
   {
-    category:'crypto', asset:'Bitcoin', sub:'BTC',
-    action:'hold', status:'open', date:'2026-05-02',
-    entry:'$61,200', target:'—', size:'', pl:'+18%', conviction:4,
-    note:'Long-term store-of-value allocation. Not trading the swings — holding through the cycle.'
+    category:'stocks', asset:'HAPI', sub:'Harbor Human Capital Factor US Large Cap ETF',
+    action:'buy', status:'open',
+    purchaseDate:'2026-07-07',
+    purchasePrice:'',            // <- FILL IN your entry
+    currentPrice:'$44.68',
+    target:'', conviction:4,
+    note:'An ETF that weights companies by the strength of their corporate culture and how they treat their people. A bet that culture compounds into returns over time.'
   },
   {
-    category:'pokemon', asset:'Charizard', sub:'Base Set · PSA 9',
-    action:'buy', status:'open', date:'2026-04-11',
-    entry:'$2,400', target:'$4,000', size:'', pl:'+12%', conviction:4,
-    note:'Blue-chip collectible. Grail card with durable demand; patience play, holding for years not months.'
+    category:'pokemon', asset:'Umbreon VMAX', sub:'Evolving Skies #215 \u00B7 PSA 10',
+    action:'buy', status:'open',
+    purchaseDate:'2026-07-07',
+    purchasePrice:'$3,000',      // cost basis from MyTCG Ledger
+    currentPrice:'$4,500',       // best price from MyTCG Ledger (update as market moves)
+    target:'', conviction:5,
+    note:'The most iconic modern Pok\u00E9mon chase card. It held its value through the market crash better than almost anything else \u2014 a blue-chip collectible and a long-term hold. Tracked live in MyTCG Ledger.'
   },
   {
-    category:'ai', asset:'Compute / Infra basket', sub:'Private thesis',
-    action:'watch', status:'open', date:'2026-06-30',
-    entry:'—', target:'—', size:'', pl:'', conviction:3,
-    note:'Tracking the picks-and-shovels layer of AI — energy, data centers, networking. Building conviction before committing.'
+    category:'sports', asset:'Knicks PSA 10 Collection', sub:'Jalen Brunson + all Knicks starters',
+    action:'buy', status:'open',
+    purchaseDate:'2026-07-07',
+    purchasePrice:'',            // total in so far, or leave blank while accumulating
+    currentPrice:'',             // blank = accumulating, no P&L yet
+    target:'', conviction:4,
+    note:'Accumulating gem-mint PSA 10 rookies and key cards of Jalen Brunson and the Knicks starting five \u2014 a bet on the franchise\u2019s trajectory and on New York demand holding strong.'
   }
 ];
 
+/* ---- THE LAUNDROMAT GOAL \u2014 the animated progress bar toward $1M.
+        Update `saved` as you set capital aside; the bar animates on load. ---- */
+const GOAL = {
+  title:'The Laundromat',
+  subtitle:'Saving toward a first cash-flowing business',
+  saved: 42000,          // <- how much you have saved so far (EDIT THIS)
+  target: 1000000,       // <- the goal
+  note:'A real, boring, cash-flowing business \u2014 the kind that quietly funds everything else. Every dollar set aside is a step toward owning it outright.'
+};
+
 /* Optional: your public note about what these numbers mean. */
-const DISCLAIMER = 'This is a personal log of my own positions, shared for transparency \u2014 not financial advice or a recommendation to buy or sell anything. I share reasoning, not tips. Do your own research and consult a licensed advisor before making any investment. Figures are approximate and may be out of date.';
+const DISCLAIMER = 'This is a personal log of my own positions, shared for transparency and to timestamp my thinking \u2014 not financial advice or a recommendation to buy or sell anything. I share reasoning, not tips. Do your own research and consult a licensed advisor before investing. Figures are approximate and updated periodically.';
 
 /* ==========================================================================
    Renderer — you shouldn't need to edit below this line.
@@ -278,18 +357,24 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
   document.getElementById('disclaimer-text').textContent = DISCLAIMER;
   document.getElementById('year').textContent = '\u00A9 ' + new Date().getFullYear() + ' \u00B7 Northspire Investment Hub';
 
-  /* Summary stats */
+  /* --- helpers to parse "$1,234.50" -> 1234.5 --- */
+  function num(v){ if(v==null) return null; const n=parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n)?null:n; }
+  function gain(p){
+    const a=num(p.purchasePrice), b=num(p.currentPrice);
+    if(a===null||b===null||a===0) return null;
+    return Math.round(((b-a)/a)*1000)/10; // one decimal
+  }
+
+  /* Summary stats — average gain across positions that have both prices */
+  const gains = POSITIONS.map(gain).filter(g=>g!==null);
+  const avg = gains.length ? Math.round((gains.reduce((s,g)=>s+g,0)/gains.length)*10)/10 : null;
   const open = POSITIONS.filter(p => p.status !== 'closed').length;
   const cats = new Set(POSITIONS.map(p => p.category)).size;
-  const withPL = POSITIONS.filter(p => /^[+\-]?\d/.test((p.pl||'').replace(/[$,%\s]/g,'')) && p.pl.includes('%'));
-  const avg = withPL.length
-    ? Math.round(withPL.reduce((s,p)=>s+parseFloat(p.pl.replace(/[%+\s]/g,'')),0)/withPL.length)
-    : null;
   const summary = [
     ['Positions', String(POSITIONS.length), ''],
     ['Open', String(open), ''],
     ['Categories', String(cats), ''],
-    ['Avg. Return', avg===null?'—':(avg>=0?'+':'')+avg+'%', avg===null?'':(avg>=0?'up':'down')]
+    ['Avg. Gain', avg===null?'\u2014':(avg>=0?'+':'')+avg+'%', avg===null?'':(avg>=0?'up':'down')]
   ];
   document.getElementById('summary').innerHTML = summary.map(s =>
     '<div class="stat"><div class="k">'+esc(s[0])+'</div><div class="v '+s[2]+'">'+esc(s[1])+'</div></div>'
@@ -297,15 +382,16 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
 
   /* Filters */
   const used = [...new Set(POSITIONS.map(p=>p.category))];
-  const filters = ['all', ...used];
-  filtEl.innerHTML = filters.map((f,i)=>{
+  filtEl.innerHTML = ['all', ...used].map((f,i)=>{
     const lbl = f==='all' ? 'All' : (CATEGORIES[f]?.label || f);
     return '<button class="filter'+(i===0?' active':'')+'" data-f="'+esc(f)+'">'+esc(lbl)+'</button>';
   }).join('');
 
   /* Cards */
-  posEl.innerHTML = POSITIONS.map(p => card(p)).join('') ||
-    '<div class="empty">No positions logged yet.</div>';
+  posEl.innerHTML = POSITIONS.map(card).join('') || '<div class="empty">No positions logged yet.</div>';
+
+  /* Laundromat goal bar */
+  renderGoal();
 
   /* Filter behaviour */
   filtEl.addEventListener('click', e=>{
@@ -313,9 +399,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
     filtEl.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const f = btn.dataset.f;
-    posEl.querySelectorAll('.position').forEach(c=>{
-      c.classList.toggle('hide', f!=='all' && c.dataset.cat!==f);
-    });
+    posEl.querySelectorAll('.position').forEach(c=> c.classList.toggle('hide', f!=='all' && c.dataset.cat!==f));
   });
 
   /* Scroll reveal */
@@ -330,24 +414,31 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
 
   function card(p){
     const c = CATEGORIES[p.category] || CATEGORIES.other;
+    const g = gain(p);
+    const plStr = g===null ? '' : (g>=0?'+':'')+g+'%';
+    const plDir = g===null ? '' : (g>=0?' up':' down');
+
     const metrics = [
-      ['Entry', p.entry],
+      ['Bought', p.purchasePrice],
+      ['Now', p.currentPrice],
       ['Target', p.target],
-      ['Size', p.size],
-      ['P&L', p.pl]
+      ['Gain', plStr]
     ].filter(m => m[1] && String(m[1]).trim());
     const metricHTML = metrics.map(m=>{
-      const isPL = m[0]==='P&L';
-      const dir = isPL ? (String(m[1]).trim().startsWith('-')?' down':(String(m[1]).trim().startsWith('+')?' up':'')) : '';
+      const dir = m[0]==='Gain' ? plDir : '';
       return '<div class="metric"><div class="mk">'+esc(m[0])+'</div><div class="mv'+dir+'">'+esc(m[1])+'</div></div>';
     }).join('');
 
     const conv = p.conviction ? '<span class="conv" title="Conviction '+p.conviction+'/5" aria-label="Conviction '+p.conviction+' of 5">'+
       [1,2,3,4,5].map(n=>'<i class="'+(n<=p.conviction?'on':'')+'"></i>').join('')+'</span>' : '';
-
     const actionCls = ({buy:'buy',sell:'sell',trim:'trim',hold:'hold',watch:'watch'})[p.action] || 'hold';
     const statusBadge = p.status ? '<span class="badge status '+esc(p.status)+'">'+esc(p.status)+'</span>' : '';
-    const dateStr = p.date ? fmtDate(p.date) : '';
+
+    /* Receipt line — the timestamped "I called it" proof */
+    const receipt = p.purchaseDate
+      ? '<div class="receipt"><span class="receipt-dot" aria-hidden="true"></span>Called on <strong>'+fmtDate(p.purchaseDate)+'</strong>'+
+        (p.purchasePrice?' at <strong>'+esc(p.purchasePrice)+'</strong>':'')+'</div>'
+      : '';
 
     return ''+
     '<article class="position" data-cat="'+esc(p.category)+'">'+
@@ -355,18 +446,83 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
         '<span class="pos-cat" aria-hidden="true">'+ c.icon +'</span>'+
         '<div class="pos-id">'+
           '<h3>'+esc(p.asset)+ conv +'</h3>'+
-          '<div class="sub">'+esc(c.label)+(p.sub?' \u00B7 '+esc(p.sub):'')+(dateStr?' \u00B7 '+dateStr:'')+'</div>'+
+          '<div class="sub">'+esc(c.label)+(p.sub?' \u00B7 '+esc(p.sub):'')+'</div>'+
         '</div>'+
         '<div class="pos-tags">'+
-          (p.action?'<span class="badge '+actionCls+'">'+esc(p.action)+'</span>':'')+
-          statusBadge+
+          (p.action?'<span class="badge '+actionCls+'">'+esc(p.action)+'</span>':'')+ statusBadge+
         '</div>'+
       '</div>'+
+      receipt+
       (metricHTML?'<div class="pos-metrics">'+metricHTML+'</div>':'')+
       (p.note?'<div class="pos-note"><span class="lbl">Thesis</span>'+esc(p.note)+'</div>':'')+
     '</article>';
   }
 
+  /* ---- Laundromat goal: animated progress bar toward the target ---- */
+  function renderGoal(){
+    const el = document.getElementById('goal');
+    if(!el || typeof GOAL==='undefined') return;
+    const pct = Math.max(0, Math.min(100, (GOAL.saved/GOAL.target)*100));
+    const milestones = [25,50,75,100];
+    el.innerHTML =
+      '<div class="goal-card">'+
+        '<div class="goal-head">'+
+          '<div>'+
+            '<div class="goal-eyebrow">Power Play \u00B7 In Progress</div>'+
+            '<h3 class="goal-title">'+esc(GOAL.title)+'</h3>'+
+            '<p class="goal-sub">'+esc(GOAL.subtitle)+'</p>'+
+          '</div>'+
+          '<div class="goal-pct" id="goal-pct">0%</div>'+
+        '</div>'+
+        '<div class="goal-track">'+
+          '<div class="goal-fill" id="goal-fill" style="width:0%"></div>'+
+          milestones.map(m=>'<span class="goal-mile" style="left:'+m+'%"></span>').join('')+
+        '</div>'+
+        '<div class="goal-figures">'+
+          '<div><span class="gf-k">Saved</span><span class="gf-v up" id="goal-saved">$0</span></div>'+
+          '<div class="gf-mid"><span class="gf-k">Remaining</span><span class="gf-v" id="goal-remaining">$0</span></div>'+
+          '<div class="gf-end"><span class="gf-k">Goal</span><span class="gf-v">'+fmtMoney(GOAL.target)+'</span></div>'+
+        '</div>'+
+        (GOAL.note?'<p class="goal-note">'+esc(GOAL.note)+'</p>':'')+
+      '</div>';
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fill=document.getElementById('goal-fill');
+    const pctEl=document.getElementById('goal-pct');
+    const savedEl=document.getElementById('goal-saved');
+    const remEl=document.getElementById('goal-remaining');
+
+    function paint(p){
+      const saved = GOAL.target*(p/100);
+      pctEl.textContent = (Math.round(p*10)/10)+'%';
+      savedEl.textContent = fmtMoney(saved);
+      remEl.textContent = fmtMoney(Math.max(0, GOAL.target-saved));
+    }
+
+    if(reduced){ fill.style.width=pct+'%'; paint(pct); return; }
+
+    // Animate the fill + count-up once the card scrolls into view
+    const start = ()=>{
+      const dur=1400, t0=performance.now();
+      requestAnimationFrame(function step(now){
+        const k=Math.min(1,(now-t0)/dur);
+        const eased=1-Math.pow(1-k,3); // easeOutCubic
+        fill.style.width=(pct*eased)+'%';
+        paint(pct*eased);
+        if(k<1) requestAnimationFrame(step);
+      });
+    };
+    if('IntersectionObserver' in window){
+      const go=new IntersectionObserver((es)=>es.forEach(x=>{ if(x.isIntersecting){ start(); go.disconnect(); }}),{threshold:.35});
+      go.observe(el);
+    } else start();
+  }
+
+  function fmtMoney(n){
+    n=Math.round(n);
+    if(n>=1000000) return '$'+(n/1000000).toFixed(n%1000000===0?0:2)+'M';
+    return '$'+n.toLocaleString('en-US');
+  }
   function fmtDate(s){
     const d = new Date(s+'T00:00:00');
     if(isNaN(d)) return esc(s);
