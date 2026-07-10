@@ -11,6 +11,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Albert+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
+<!-- Supabase JS client (for accounts + shared feed) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 /* ==========================================================================
    NORTHSPIRE — The Exchange
@@ -218,6 +221,84 @@ button{ font-family:inherit; }
 footer{ margin-top:64px; text-align:center; color:var(--faint); font-size:12px; letter-spacing:.12em; }
 footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); opacity:.55; }
 
+/* ==========================================================================
+   AUTH — bar in topbar + modal
+   ========================================================================== */
+.auth-bar{ display:flex; align-items:center; gap:10px; }
+.auth-user{ display:flex; align-items:center; gap:9px; font-size:12.5px; color:var(--muted); }
+.auth-user .avatar{ width:30px; height:30px; font-size:12px; }
+.auth-user .name{ color:var(--text); font-weight:500; }
+.btn-auth{
+  display:inline-flex; align-items:center; gap:7px;
+  background:linear-gradient(180deg, rgba(203,184,146,.2), rgba(203,184,146,.08));
+  color:var(--gold); border:1px solid rgba(203,184,146,.4); border-radius:11px;
+  padding:8px 16px; font-size:12.5px; font-weight:600; letter-spacing:.04em; cursor:pointer;
+  transition:border-color .25s ease, box-shadow .25s ease, transform .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-auth:hover{ border-color:var(--gold); box-shadow:0 0 14px -4px rgba(203,184,146,.4); }
+.btn-auth:active{ transform:scale(.97); }
+.btn-ghost{ background:none; color:var(--muted); border:1px solid var(--border-lit); }
+.btn-ghost:hover{ color:var(--text); border-color:var(--border-lit); box-shadow:none; }
+
+/* Signed-out overlay on composer */
+.composer.locked{ position:relative; }
+.composer .lock-veil{
+  display:none; position:absolute; inset:0; border-radius:var(--radius);
+  background:rgba(10,12,16,.7); -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  align-items:center; justify-content:center; flex-direction:column; gap:12px; text-align:center; padding:20px; z-index:2;
+}
+.composer.locked .lock-veil{ display:flex; }
+.lock-veil p{ font-size:13.5px; color:var(--muted); max-width:34ch; }
+
+/* Modal */
+.modal-back{
+  position:fixed; inset:0; z-index:100;
+  background:rgba(6,8,11,.72); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  display:none; align-items:center; justify-content:center; padding:20px;
+}
+.modal-back.open{ display:flex; }
+.modal{
+  width:100%; max-width:400px;
+  background:linear-gradient(180deg, var(--surface-2), var(--surface));
+  border:1px solid var(--border-lit); border-radius:var(--radius);
+  box-shadow:var(--shadow-lift); padding:28px; position:relative;
+}
+.modal h2{ font-family:var(--font-display); font-weight:400; font-size:24px; letter-spacing:.02em; margin-bottom:6px; }
+.modal .sub{ font-size:13px; color:var(--muted); margin-bottom:22px; }
+.modal .field{ margin-bottom:14px; }
+.modal label{ display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--faint); margin-bottom:6px; }
+.modal input{
+  width:100%; background:var(--surface); color:var(--text);
+  border:1px solid var(--border); border-radius:12px; padding:12px 14px; font:inherit; font-size:14.5px;
+  transition:border-color .25s ease;
+}
+.modal input:focus{ outline:none; border-color:rgba(203,184,146,.45); }
+.modal input::placeholder{ color:var(--faint); }
+.modal .field .priv{ font-size:10.5px; color:var(--faint); margin-top:5px; }
+.modal .submit{
+  width:100%; margin-top:8px;
+  background:linear-gradient(180deg, rgba(203,184,146,.24), rgba(203,184,146,.1));
+  color:var(--gold); border:1px solid rgba(203,184,146,.45); border-radius:12px;
+  padding:13px; font-size:14px; font-weight:600; letter-spacing:.04em; cursor:pointer;
+  transition:border-color .25s ease, box-shadow .25s ease;
+}
+.modal .submit:hover{ border-color:var(--gold); box-shadow:0 0 16px -4px rgba(203,184,146,.4); }
+.modal .submit:disabled{ opacity:.55; cursor:not-allowed; }
+.modal .toggle{ text-align:center; font-size:13px; color:var(--muted); margin-top:18px; }
+.modal .toggle button{ background:none; border:none; color:var(--gold); cursor:pointer; font:inherit; font-size:13px; }
+.modal .toggle button:hover{ text-decoration:underline; }
+.modal .msg{ font-size:13px; margin-top:14px; padding:10px 12px; border-radius:10px; display:none; }
+.modal .msg.show{ display:block; }
+.modal .msg.err{ color:var(--down,#e08a8a); background:rgba(224,138,138,.1); border:1px solid rgba(224,138,138,.25); }
+.modal .msg.ok{ color:var(--live); background:rgba(127,207,159,.1); border:1px solid rgba(127,207,159,.25); }
+.modal .close{ position:absolute; top:16px; right:16px; background:none; border:none; color:var(--faint); cursor:pointer; font-size:22px; line-height:1; }
+.modal .close:hover{ color:var(--text); }
+.modal .config-warn{ font-size:12px; color:var(--gold); background:var(--gold-soft); border:1px solid rgba(203,184,146,.3); border-radius:10px; padding:11px 13px; margin-bottom:18px; line-height:1.5; }
+
+/* verified badge */
+.role.verified{ color:var(--accent); background:var(--accent-soft); border-color:rgba(163,196,220,.3); }
+
 /* Reveal */
 .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1); }
 .reveal.in{ opacity:1; transform:none; }
@@ -234,7 +315,9 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
     <span>Back to Hub</span>
   </a>
-  <span class="brand">Northspire</span>
+  <div class="auth-bar" id="auth-bar">
+    <!-- populated by JS: signed-out shows Sign In; signed-in shows name + Sign Out -->
+  </div>
 </div>
 
 <div class="wrap">
@@ -250,9 +333,13 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
     <!-- ============ MAIN COLUMN: composer + feed ============ -->
     <div class="main">
 
-      <div class="g composer reveal">
+      <div class="g composer locked reveal" id="composer">
+        <div class="lock-veil" id="lock-veil">
+          <p>Sign in to post to the Exchange and join the discussion.</p>
+          <button class="btn-auth" id="veil-signin">Create an account · Sign in</button>
+        </div>
         <div class="composer-row">
-          <span class="avatar" aria-hidden="true">You</span>
+          <span class="avatar" id="composer-avatar" aria-hidden="true">You</span>
           <textarea id="composer-text" placeholder="Share an idea, an opportunity, or an observation worth the room's time..." maxlength="1000"></textarea>
         </div>
         <div class="composer-foot">
@@ -311,190 +398,338 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
 
 </div>
 
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal-back" id="modal-back">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="close" id="modal-close" aria-label="Close">&times;</button>
+    <div id="config-warn" class="config-warn" style="display:none">
+      Accounts aren't connected yet. Add your Supabase keys in the config at the top of the page's script to enable sign-up. See the setup guide.
+    </div>
+    <h2 id="modal-title">Join the Exchange</h2>
+    <p class="sub" id="modal-sub">Create an account to share ideas with the Northspire community.</p>
+
+    <div class="field" id="field-name">
+      <label for="in-name">Display name</label>
+      <input type="text" id="in-name" placeholder="How you'll appear on posts" maxlength="40" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="in-email">Email</label>
+      <input type="email" id="in-email" placeholder="you@example.com" autocomplete="email">
+    </div>
+    <div class="field" id="field-phone">
+      <label for="in-phone">Phone <span style="text-transform:none;letter-spacing:0;color:var(--faint)">(optional, private)</span></label>
+      <input type="tel" id="in-phone" placeholder="For account security only" autocomplete="tel">
+      <div class="priv">Never shown publicly. Used only for account recovery. You can leave this blank.</div>
+    </div>
+    <div class="field">
+      <label for="in-pass">Password</label>
+      <input type="password" id="in-pass" placeholder="At least 8 characters" autocomplete="current-password">
+    </div>
+
+    <button class="submit" id="auth-submit">Create account</button>
+    <div class="msg" id="auth-msg"></div>
+    <div class="toggle" id="auth-toggle">
+      Already a member? <button id="toggle-btn">Sign in</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ==========================================================================
-   THE EXCHANGE — frontend-only community prototype.
-   Posts, likes, and comments live in THIS browser's localStorage (per
-   visitor). To make it truly shared between members, connect a backend
-   (e.g. Supabase) — this UI was built so that can slot in later.
+   THE EXCHANGE — Supabase-powered community.
+   --------------------------------------------------------------------------
+   SETUP (you do this once — see the setup guide file):
+     1. Create a free project at supabase.com
+     2. In the SQL editor, run the setup script from EXCHANGE-SETUP.md
+     3. Paste your project URL + anon key below. Both are safe to expose
+        PUBLICLY *because* the database Row Level Security rules (from the
+        setup script) control who can read/write what. Do NOT paste the
+        service_role key here — only the anon (public) key.
+   Until keys are added, the page runs in read-only demo mode with seed posts.
    ========================================================================== */
-
-/* Seed content shown to every visitor (until they post their own). */
-const SEED = [
-  {
-    id:'seed-1', name:'Georlennys Martinez', role:'Founder', founder:true,
-    time:'2d', cat:'Venture Idea',
-    text:'Opening The Exchange to the community. The bar here is simple: <strong>ideas worth the room\u2019s time.</strong> If you\u2019ve spotted an opportunity, a market shift, or a way any Northspire product could be better \u2014 this is where it belongs.',
-    likes:12, liked:false,
-    comments:[
-      {name:'Member', text:'Great addition \u2014 been hoping for a place to discuss the collectibles side.'}
-    ]
-  },
-  {
-    id:'seed-2', name:'Community Member', role:'Member', founder:false,
-    time:'1d', cat:'Market Observation',
-    text:'Graded card premiums for iconic modern cards keep proving resilient vs raw \u2014 the PSA 10 spread on top Evolving Skies cards barely moved during the pullback. Quality concentration seems to be the durable thesis.',
-    likes:8, liked:false,
-    comments:[
-      {name:'Georlennys Martinez', text:'Agreed \u2014 the flight to quality shows up in every downturn. Blue-chips hold.'}
-    ]
-  },
-  {
-    id:'seed-3', name:'Community Member', role:'Member', founder:false,
-    time:'16h', cat:'Product Feedback',
-    text:'MyTCG Ledger idea: a \u201cthesis note\u201d field on each position, so you remember <strong>why</strong> you bought a card when you review it a year later. Would pair well with the price history.',
-    likes:5, liked:false,
-    comments:[]
-  }
-];
+const SUPABASE_URL  = '';   // <-- paste your Project URL here
+const SUPABASE_ANON = '';   // <-- paste your anon (public) key here
 
 const CATS = ['Investment Idea','Venture Idea','Market Observation','Product Feedback','Partnership Lead','General Discussion'];
-const LS_KEY = 'northspire-exchange-v1';
 
-(function(){
+/* Demo seed shown when Supabase isn't configured yet (read-only). */
+const SEED = [
+  { id:'seed-1', display_name:'Georlennys Martinez', role:'Founder', created_at:daysAgo(2), category:'Venture Idea',
+    body:'Opening The Exchange to the community. The bar here is simple: ideas worth the room\u2019s time. If you\u2019ve spotted an opportunity, a market shift, or a way any Northspire product could be better \u2014 this is where it belongs.',
+    like_count:12, comment_count:1, _liked:false, _comments:[{display_name:'Member', body:'Great addition \u2014 been hoping for a place to discuss the collectibles side.'}] },
+  { id:'seed-2', display_name:'Community Member', role:'Member', created_at:daysAgo(1), category:'Market Observation',
+    body:'Graded card premiums for iconic modern cards keep proving resilient vs raw \u2014 the PSA 10 spread on top Evolving Skies cards barely moved during the pullback. Quality concentration seems to be the durable thesis.',
+    like_count:8, comment_count:1, _liked:false, _comments:[{display_name:'Georlennys Martinez', body:'Agreed \u2014 the flight to quality shows up in every downturn. Blue-chips hold.'}] },
+  { id:'seed-3', display_name:'Community Member', role:'Member', created_at:hoursAgo(16), category:'Product Feedback',
+    body:'MyTCG Ledger idea: a \u201cthesis note\u201d field on each position, so you remember why you bought a card when you review it a year later. Would pair well with the price history.',
+    like_count:5, comment_count:0, _liked:false, _comments:[] }
+];
+function daysAgo(n){ return new Date(Date.now()-n*864e5).toISOString(); }
+function hoursAgo(n){ return new Date(Date.now()-n*36e5).toISOString(); }
+
+/* ---- Supabase client (or null in demo mode) ---- */
+const CONFIGURED = SUPABASE_URL && SUPABASE_ANON && window.supabase;
+const sb = CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
+
+let session = null;
+let profile = null;   // { display_name, role }
+let mode = 'signup';  // auth modal mode (declared before boot uses it)
+
+/* ============ boot ============ */
+(async function boot(){
   document.getElementById('year').textContent = '\u00A9 ' + new Date().getFullYear() + ' \u00B7 The Exchange \u00B7 Northspire Ventures';
+  wireModal();
 
-  /* ---- state ---- */
-  let userPosts = load();
-  function load(){
-    try{ return JSON.parse(localStorage.getItem(LS_KEY)) || []; }catch(e){ return []; }
+  if(sb){
+    const { data } = await sb.auth.getSession();
+    session = data.session;
+    if(session) await loadProfile();
+    sb.auth.onAuthStateChange(async (_e, s)=>{ session=s; if(s) await loadProfile(); else profile=null; renderAuth(); renderFeed(); });
   }
-  function save(){
-    try{ localStorage.setItem(LS_KEY, JSON.stringify(userPosts)); }catch(e){}
+  renderAuth();
+  await renderFeed();
+  revealAll();
+})();
+
+/* ============ auth UI ============ */
+function renderAuth(){
+  const bar = document.getElementById('auth-bar');
+  const composer = document.getElementById('composer');
+  if(session && profile){
+    composer.classList.remove('locked');
+    document.getElementById('composer-avatar').textContent = initials(profile.display_name);
+    bar.innerHTML =
+      '<span class="auth-user"><span class="avatar">'+initials(profile.display_name)+'</span>'+
+      '<span class="name">'+esc(profile.display_name)+'</span></span>'+
+      '<button class="btn-auth btn-ghost" id="signout">Sign out</button>';
+    document.getElementById('signout').onclick = async ()=>{ await sb.auth.signOut(); };
+  } else {
+    composer.classList.add('locked');
+    bar.innerHTML = '<button class="btn-auth" id="signin">Sign in</button>';
+    document.getElementById('signin').onclick = openModal;
   }
-  function allPosts(){ return [...userPosts, ...SEED]; }
+}
 
-  /* ---- render feed ---- */
-  const feed = document.getElementById('feed');
-  function render(){
-    feed.innerHTML = allPosts().map(postHTML).join('');
-    renderSignals();
-  }
+/* ============ modal ============ */
+function wireModal(){
+  const back=document.getElementById('modal-back');
+  document.getElementById('modal-close').onclick = closeModal;
+  back.onclick = e=>{ if(e.target===back) closeModal(); };
+  document.getElementById('veil-signin').onclick = openModal;
+  document.getElementById('toggle-btn').onclick = ()=>{ mode = mode==='signup'?'signin':'signup'; syncModal(); };
+  document.getElementById('auth-submit').onclick = submitAuth;
+  if(!CONFIGURED) document.getElementById('config-warn').style.display='block';
+  syncModal();
+}
+function syncModal(){
+  const signup = mode==='signup';
+  document.getElementById('modal-title').textContent = signup ? 'Join the Exchange' : 'Welcome back';
+  document.getElementById('modal-sub').textContent = signup
+    ? 'Create an account to share ideas with the Northspire community.'
+    : 'Sign in to continue the discussion.';
+  document.getElementById('auth-submit').textContent = signup ? 'Create account' : 'Sign in';
+  document.getElementById('field-name').style.display = signup ? '' : 'none';
+  document.getElementById('field-phone').style.display = signup ? '' : 'none';
+  document.getElementById('auth-toggle').innerHTML = signup
+    ? 'Already a member? <button id="toggle-btn">Sign in</button>'
+    : 'New here? <button id="toggle-btn">Create an account</button>';
+  document.getElementById('toggle-btn').onclick = ()=>{ mode = signup?'signin':'signup'; syncModal(); };
+  document.getElementById('in-pass').setAttribute('autocomplete', signup?'new-password':'current-password');
+  hideMsg();
+}
+function openModal(){ document.getElementById('modal-back').classList.add('open'); document.getElementById(mode==='signup'?'in-name':'in-email').focus(); }
+function closeModal(){ document.getElementById('modal-back').classList.remove('open'); }
+function showMsg(text, ok){ const m=document.getElementById('auth-msg'); m.textContent=text; m.className='msg show '+(ok?'ok':'err'); }
+function hideMsg(){ document.getElementById('auth-msg').className='msg'; }
 
-  function postHTML(p){
-    const initials = esc(p.name.split(' ').map(w=>w[0]).slice(0,2).join(''));
-    const cHTML = (p.comments||[]).slice(0,2).map(c=>
-      '<div class="comment"><span class="avatar" aria-hidden="true">'+esc(c.name.split(' ').map(w=>w[0]).slice(0,2).join(''))+'</span>'+
-      '<div class="c-body"><div class="c-name">'+esc(c.name)+'</div><div class="c-text">'+esc(c.text)+'</div></div></div>'
-    ).join('');
-    return ''+
-    '<article class="g post" data-id="'+esc(p.id)+'">'+
-      '<div class="post-head">'+
-        '<span class="avatar" aria-hidden="true">'+initials+'</span>'+
-        '<div class="post-id">'+
-          '<div class="name">'+esc(p.name)+' <span class="role'+(p.founder?' founder':'')+'">'+esc(p.role)+'</span></div>'+
-          '<div class="meta">'+esc(p.time)+' ago</div>'+
-        '</div>'+
-        '<span class="cat">'+esc(p.cat)+'</span>'+
-      '</div>'+
-      '<div class="post-body">'+p.text+'</div>'+   /* seed text may contain <strong>; user text is escaped at creation */
-      '<div class="post-actions">'+
-        '<button class="act like'+(p.liked?' liked':'')+'" data-act="like">'+
-          '<svg viewBox="0 0 24 24" fill="'+(p.liked?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/></svg>'+
-          '<span>'+p.likes+'</span></button>'+
-        '<button class="act" data-act="focus-comment">'+
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>'+
-          '<span>'+(p.comments?p.comments.length:0)+'</span></button>'+
-      '</div>'+
-      '<div class="comments">'+
-        cHTML+
-        '<div class="add-comment">'+
-          '<input type="text" placeholder="Add a comment..." maxlength="400" aria-label="Add a comment">'+
-          '<button data-act="comment">Reply</button>'+
-        '</div>'+
-        ((p.comments||[]).length>2 ? '<button class="view-disc">View full discussion \u2192</button>' : '')+
-      '</div>'+
-    '</article>';
-  }
-
-  /* ---- signals panel (computed live from the feed) ---- */
-  function renderSignals(){
-    const posts = allPosts();
-    const byCat = {};
-    posts.forEach(p=>{ byCat[p.cat]=(byCat[p.cat]||0)+1; });
-    const topCat = Object.entries(byCat).sort((a,b)=>b[1]-a[1])[0];
-    const topPost = [...posts].sort((a,b)=>b.likes-a.likes)[0];
-    const newCount = userPosts.length;
-    document.getElementById('signals').innerHTML =
-      '<div class="signal"><span class="k">Most discussed</span><span class="v gold">'+esc(topCat?topCat[0]:'\u2014')+'</span></div>'+
-      '<div class="signal"><span class="k">Top idea this week</span><span class="v">'+esc(topPost?truncate(strip(topPost.text),34):'\u2014')+'</span></div>'+
-      '<div class="signal"><span class="k">Highest conviction</span><span class="v gold">'+(topPost?topPost.likes+' upvotes':'\u2014')+'</span></div>'+
-      '<div class="signal"><span class="k">New submissions</span><span class="v">'+(newCount+3)+' this week</span></div>'+
-      '<div class="signal"><span class="k">Under review</span><span class="v">2 ideas</span></div>';
-  }
-
-  /* ---- composer ---- */
-  document.getElementById('post-btn').addEventListener('click', ()=>{
-    const ta = document.getElementById('composer-text');
-    const text = ta.value.trim();
-    if(!text) { ta.focus(); return; }
-    const cat = document.getElementById('composer-cat').value;
-    userPosts.unshift({
-      id:'u-'+Date.now(),
-      name:'You', role:'Member', founder:false,
-      time:'now', cat:cat,
-      text:esc(text),           /* user input is escaped at creation */
-      likes:0, liked:false, comments:[]
-    });
-    save(); ta.value=''; render();
-    feed.firstElementChild?.scrollIntoView({behavior:'smooth', block:'center'});
-  });
-
-  /* ---- feed interactions (event delegation) ---- */
-  feed.addEventListener('click', e=>{
-    const post = e.target.closest('.post'); if(!post) return;
-    const id = post.dataset.id;
-    const p = allPosts().find(x=>x.id===id); if(!p) return;
-
-    const likeBtn = e.target.closest('[data-act="like"]');
-    if(likeBtn){
-      p.liked = !p.liked;
-      p.likes += p.liked ? 1 : -1;
-      persistIfUser(p); render(); return;
+async function submitAuth(){
+  if(!sb){ showMsg('Accounts aren\u2019t connected yet. Add Supabase keys to enable sign-up.', false); return; }
+  const btn=document.getElementById('auth-submit'); btn.disabled=true;
+  const email=val('in-email'), pass=val('in-pass');
+  try{
+    if(mode==='signup'){
+      const name=val('in-name'), phone=val('in-phone');
+      if(name.length<2){ showMsg('Please enter a display name.', false); btn.disabled=false; return; }
+      if(pass.length<8){ showMsg('Password must be at least 8 characters.', false); btn.disabled=false; return; }
+      const { data, error } = await sb.auth.signUp({
+        email, password:pass,
+        options:{ data:{ display_name:name, phone:phone||null } }   // phone stored in private auth metadata, never in posts
+      });
+      if(error) throw error;
+      showMsg('Account created. If email confirmation is on, check your inbox, then sign in.', true);
+      mode='signin'; setTimeout(syncModal, 1600);
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email, password:pass });
+      if(error) throw error;
+      closeModal();
     }
-    const focusBtn = e.target.closest('[data-act="focus-comment"]');
-    if(focusBtn){ post.querySelector('.add-comment input')?.focus(); return; }
+  }catch(err){ showMsg(err.message || 'Something went wrong.', false); }
+  btn.disabled=false;
+}
 
-    const commentBtn = e.target.closest('[data-act="comment"]');
-    if(commentBtn){
-      const input = post.querySelector('.add-comment input');
-      const val = (input?.value||'').trim();
-      if(!val){ input?.focus(); return; }
-      p.comments = p.comments || [];
-      p.comments.push({ name:'You', text:esc(val) });
-      persistIfUser(p); render(); return;
-    }
-  });
-  /* Enter key posts a comment */
-  feed.addEventListener('keydown', e=>{
-    if(e.key==='Enter' && e.target.matches('.add-comment input')){
-      e.preventDefault();
-      e.target.closest('.add-comment').querySelector('[data-act="comment"]').click();
-    }
-  });
+async function loadProfile(){
+  if(!sb || !session) return;
+  // profiles table holds public display_name + role (NOT email/phone)
+  const { data } = await sb.from('profiles').select('display_name, role').eq('id', session.user.id).single();
+  profile = data || { display_name: session.user.user_metadata?.display_name || 'Member', role:'Member' };
+}
 
-  function persistIfUser(p){
-    /* Seed posts mutate in-memory only (reset on reload); user posts persist. */
-    if(String(p.id).startsWith('u-')) save();
+/* ============ feed ============ */
+const feedEl = document.getElementById('feed');
+
+async function fetchPosts(){
+  if(!sb) return SEED;
+  const { data:posts, error } = await sb.from('posts')
+    .select('id, display_name, role, category, body, like_count, comment_count, created_at')
+    .order('created_at', { ascending:false }).limit(50);
+  if(error || !posts) return SEED;
+  // fetch a preview of comments per post (up to 2)
+  for(const p of posts){
+    const { data:cs } = await sb.from('comments').select('display_name, body').eq('post_id', p.id).order('created_at').limit(2);
+    p._comments = cs || [];
+    if(session){
+      const { data:l } = await sb.from('likes').select('post_id').eq('post_id', p.id).eq('user_id', session.user.id).maybeSingle();
+      p._liked = !!l;
+    } else p._liked = false;
   }
+  return posts;
+}
 
-  /* ---- helpers ---- */
-  function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function strip(s){ return String(s).replace(/<[^>]*>/g,''); }
-  function truncate(s,n){ return s.length>n ? s.slice(0,n-1)+'\u2026' : s; }
+async function renderFeed(){
+  const posts = await fetchPosts();
+  window._posts = posts;
+  feedEl.innerHTML = posts.map(postHTML).join('') || '<div class="g post" style="text-align:center;color:var(--faint)">No posts yet. Be the first.</div>';
+  renderSignals(posts);
+  revealAll();
+}
 
-  render();
+function postHTML(p){
+  const roleCls = p.role==='Founder' ? ' founder' : (p.role==='Verified' ? ' verified' : '');
+  const cHTML = (p._comments||[]).slice(0,2).map(c=>
+    '<div class="comment"><span class="avatar" aria-hidden="true">'+initials(c.display_name)+'</span>'+
+    '<div class="c-body"><div class="c-name">'+esc(c.display_name)+'</div><div class="c-text">'+esc(c.body)+'</div></div></div>'
+  ).join('');
+  const isSeed = String(p.id).startsWith('seed-');
+  return ''+
+  '<article class="g post" data-id="'+esc(p.id)+'"'+(isSeed?' data-seed="1"':'')+'>'+
+    '<div class="post-head">'+
+      '<span class="avatar" aria-hidden="true">'+initials(p.display_name)+'</span>'+
+      '<div class="post-id">'+
+        '<div class="name">'+esc(p.display_name)+' <span class="role'+roleCls+'">'+esc(p.role||'Member')+'</span></div>'+
+        '<div class="meta">'+timeAgo(p.created_at)+'</div>'+
+      '</div>'+
+      '<span class="cat">'+esc(p.category)+'</span>'+
+    '</div>'+
+    '<div class="post-body">'+esc(p.body)+'</div>'+
+    '<div class="post-actions">'+
+      '<button class="act like'+(p._liked?' liked':'')+'" data-act="like">'+
+        '<svg viewBox="0 0 24 24" fill="'+(p._liked?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z"/></svg>'+
+        '<span>'+(p.like_count||0)+'</span></button>'+
+      '<button class="act" data-act="focus-comment">'+
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5z"/></svg>'+
+        '<span>'+(p.comment_count||0)+'</span></button>'+
+    '</div>'+
+    '<div class="comments">'+
+      cHTML+
+      '<div class="add-comment">'+
+        '<input type="text" placeholder="'+(session?'Add a comment...':'Sign in to comment')+'" maxlength="400" aria-label="Add a comment"'+(session?'':' disabled')+'>'+
+        '<button data-act="comment"'+(session?'':' disabled')+'>Reply</button>'+
+      '</div>'+
+    '</div>'+
+  '</article>';
+}
 
-  /* ---- scroll reveal ---- */
+/* feed interactions */
+feedEl.addEventListener('click', async e=>{
+  const post = e.target.closest('.post'); if(!post) return;
+  const id = post.dataset.id;
+  const isSeed = post.dataset.seed==='1';
+
+  if(e.target.closest('[data-act="like"]')){
+    if(!session){ openModal(); return; }
+    if(isSeed){ return; }
+    await toggleLike(id); await renderFeed(); return;
+  }
+  if(e.target.closest('[data-act="focus-comment"]')){
+    if(!session){ openModal(); return; }
+    post.querySelector('.add-comment input')?.focus(); return;
+  }
+  if(e.target.closest('[data-act="comment"]')){
+    if(!session){ openModal(); return; }
+    const input=post.querySelector('.add-comment input'); const v=(input?.value||'').trim();
+    if(!v || isSeed){ return; }
+    await addComment(id, v); await renderFeed(); return;
+  }
+});
+feedEl.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.matches('.add-comment input') && !e.target.disabled){
+    e.preventDefault(); e.target.closest('.add-comment').querySelector('[data-act="comment"]').click();
+  }
+});
+
+/* composer */
+document.getElementById('post-btn').addEventListener('click', async ()=>{
+  if(!session){ openModal(); return; }
+  const ta=document.getElementById('composer-text'); const body=ta.value.trim();
+  if(!body) { ta.focus(); return; }
+  const category=document.getElementById('composer-cat').value;
+  const { error } = await sb.from('posts').insert({
+    user_id: session.user.id,
+    display_name: profile.display_name,
+    role: profile.role || 'Member',
+    category, body
+  });
+  if(error){ alert(error.message); return; }
+  ta.value=''; await renderFeed();
+  feedEl.firstElementChild?.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+async function toggleLike(postId){
+  const { data:existing } = await sb.from('likes').select('id').eq('post_id',postId).eq('user_id',session.user.id).maybeSingle();
+  if(existing){ await sb.from('likes').delete().eq('id', existing.id); await sb.rpc('dec_like', { pid: postId }); }
+  else { await sb.from('likes').insert({ post_id:postId, user_id:session.user.id }); await sb.rpc('inc_like', { pid: postId }); }
+}
+async function addComment(postId, body){
+  await sb.from('comments').insert({ post_id:postId, user_id:session.user.id, display_name:profile.display_name, body });
+  await sb.rpc('inc_comment', { pid: postId });
+}
+
+/* signals panel */
+function renderSignals(posts){
+  const byCat={}; posts.forEach(p=>{ byCat[p.category]=(byCat[p.category]||0)+1; });
+  const topCat=Object.entries(byCat).sort((a,b)=>b[1]-a[1])[0];
+  const topPost=[...posts].sort((a,b)=>(b.like_count||0)-(a.like_count||0))[0];
+  document.getElementById('signals').innerHTML =
+    '<div class="signal"><span class="k">Most discussed</span><span class="v gold">'+esc(topCat?topCat[0]:'\u2014')+'</span></div>'+
+    '<div class="signal"><span class="k">Top idea</span><span class="v">'+esc(topPost?truncate(topPost.body,34):'\u2014')+'</span></div>'+
+    '<div class="signal"><span class="k">Highest conviction</span><span class="v gold">'+(topPost?(topPost.like_count||0)+' upvotes':'\u2014')+'</span></div>'+
+    '<div class="signal"><span class="k">Posts in feed</span><span class="v">'+posts.length+'</span></div>'+
+    '<div class="signal"><span class="k">Status</span><span class="v">'+(sb?'Live':'Demo mode')+'</span></div>';
+}
+
+/* helpers */
+function val(id){ return document.getElementById(id).value.trim(); }
+function initials(s){ return String(s||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+function esc(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function truncate(s,n){ s=String(s); return s.length>n ? s.slice(0,n-1)+'\u2026' : s; }
+function timeAgo(iso){
+  const d=new Date(iso), s=(Date.now()-d)/1000;
+  if(s<60) return 'just now';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago';
+  if(s<604800) return Math.floor(s/86400)+'d ago';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function revealAll(){
   const io = ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches)
     ? new IntersectionObserver((es)=>es.forEach(x=>{ if(x.isIntersecting){ x.target.classList.add('in'); io.unobserve(x.target); }}), {threshold:.08})
     : null;
   document.querySelectorAll('.reveal, .post').forEach((el,i)=>{
     el.classList.add('reveal');
-    if(io){ el.style.transitionDelay=Math.min(i*40,240)+'ms'; io.observe(el); }
+    if(io){ el.style.transitionDelay=Math.min(i*30,240)+'ms'; io.observe(el); }
     else el.classList.add('in');
   });
-})();
+}
 
 /* Starfield — same engine as every Northspire page */
 (function starfield(){
