@@ -232,8 +232,8 @@ a{ color:inherit; text-decoration:none; }
 /* Lightbox */
 .vlb{ position:fixed; inset:0; z-index:90; display:none; }
 .vlb.open{ display:block; }
-.vlb-veil{ position:absolute; inset:0; background:rgba(4,5,8,.92); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
-.vlb-box{ position:relative; height:100%; display:grid; grid-template-columns:1fr minmax(250px,320px);
+.vlb-veil{ position:absolute; inset:0; z-index:0; background:rgba(4,5,8,.92); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.vlb-box{ position:relative; z-index:1; height:100%; display:grid; grid-template-columns:1fr minmax(250px,320px);
   gap:0; max-width:1080px; margin:0 auto; padding:56px 18px 32px; align-items:center; }
 .vlb-imgwrap{ display:grid; place-items:center; height:100%; min-height:0; }
 .vlb-imgwrap img{ max-width:100%; max-height:calc(100vh - 110px); border-radius:12px;
@@ -249,13 +249,13 @@ a{ color:inherit; text-decoration:none; }
 .vlb-cert{ display:inline-flex; align-items:center; gap:7px; margin-top:4px; font-size:12.5px;
   color:var(--accent); text-decoration:none; border-bottom:1px dashed rgba(163,196,220,.4); padding-bottom:2px; }
 .vlb-cert:hover{ border-bottom-style:solid; }
-.vlb-count{ position:absolute; top:20px; left:50%; transform:translateX(-50%);
-  font-size:11px; letter-spacing:.2em; color:var(--faint); }
-.vlb-close{ position:absolute; top:14px; right:16px; width:40px; height:40px; border-radius:50%;
+.vlb-count{ position:absolute; z-index:3; top:20px; left:50%; transform:translateX(-50%);
+  font-size:11px; letter-spacing:.2em; color:var(--faint); pointer-events:none; }
+.vlb-close{ position:absolute; z-index:3; top:14px; right:16px; width:40px; height:40px; border-radius:50%;
   border:1px solid var(--border-lit); background:var(--glass); color:var(--text); cursor:pointer;
   display:grid; place-items:center; font-size:17px; transition:border-color .2s, transform .2s; }
 .vlb-close:hover{ border-color:#F58426; transform:rotate(90deg); }
-.vlb-nav{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%;
+.vlb-nav{ position:absolute; z-index:3; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%;
   border:1px solid var(--border-lit); background:var(--glass); color:var(--text); cursor:pointer;
   display:grid; place-items:center; transition:border-color .2s, background .2s; }
 .vlb-nav:hover{ border-color:var(--accent); background:var(--surface-2); }
@@ -265,7 +265,7 @@ a{ color:inherit; text-decoration:none; }
 @media (max-width:760px){
   .vlb-box{ grid-template-columns:1fr; padding:56px 14px 24px; overflow-y:auto; align-items:start; }
   .vlb-imgwrap img{ max-height:58vh; }
-  .vlb-meta{ padding:18px 4px 40px; }
+  .vlb-meta{ padding:18px 4px 78px; }
   .vlb-nav{ top:auto; bottom:12px; transform:none; }
   .vlb-prev{ left:calc(50% - 56px); } .vlb-next{ right:calc(50% - 56px); }
   .vault-grid{ columns:2 150px; column-gap:12px; }
@@ -522,7 +522,7 @@ const POSITIONS = [
     note:'The most iconic modern Pok\u00E9mon chase card. It held its value through the market crash better than almost anything else \u2014 a blue-chip collectible and a long-term hold. Tracked live in MyTCG Ledger.'
   },
   {
-    category:'sports', asset:'Knicks Graded Collection', sub:'Brunson, Towns, Bridges, Hart & more \u00B7 19 slabs',
+    category:'sports', asset:'Knicks Graded Collection', sub:'Brunson, Towns, Bridges, Hart, Anunoby, Robinson & more',
     gallery:true,
     action:'buy', status:'open',
     purchaseDate:'2026-07-07',
@@ -669,7 +669,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
     const vaultBtn = p.gallery
       ? '<button type="button" class="vault-btn" data-open-vault>'+
           '<span class="vb-flag" aria-hidden="true"></span>'+
-          '<span class="vb-txt">View the vault \u00B7 19 graded slabs</span>'+
+          '<span class="vb-txt">View the vault</span>'+
           '<svg class="vb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'+
         '</button>'
       : '';
@@ -822,7 +822,19 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
     { img:'cards/16-towns-25-topps-chrome-auto.webp',     p:'Karl-Anthony Towns', yr:2025, set:'Topps Chrome',     par:'Sig Style \u00B7 Blue Refractor \u00B7 Auto 38/150', num:'#SS-KAT', co:'PSA', g:9, gl:'MINT', cert:'152932315', tags:['AUTO','/150'] },
     { img:'cards/17-brunson-23-phoenix-pyro-purple.webp', p:'Jalen Brunson',      yr:2023, set:'Phoenix',          par:'Pyro \u00B7 Purple',              num:'#4',      co:'PSA', g:10, gl:'GEM MT', cert:'116075072' },
     { img:'cards/18-towns-23-cosmic-chrome-gold.webp',    p:'Karl-Anthony Towns', yr:2023, set:'Cosmic Chrome',    par:'Gold Interstellar',               num:'#74',     co:'PSA', g:10, gl:'GEM MT', cert:'110755696' },
-    { img:'cards/19-robinson-18-optic-blue-velocity.webp',p:'Mitchell Robinson',  yr:2018, set:'Donruss Optic',    par:'Blue Velocity \u00B7 Rated Rookie', num:'#163',  co:'PSA', g:10, gl:'GEM MT', cert:'52333765', tags:['RC'] }
+    { img:'cards/19-robinson-18-optic-blue-velocity.webp',p:'Mitchell Robinson',  yr:2018, set:'Donruss Optic',    par:'Blue Velocity \u00B7 Rated Rookie', num:'#163',  co:'PSA', g:10, gl:'GEM MT', cert:'52333765', tags:['RC'] },
+    { img:'cards/20-towns-24-select-green-camo.webp',     p:'Karl-Anthony Towns', yr:2024, set:'Select',          par:'Green Camo',                      num:'#114',    co:'PSA', g:10, gl:'GEM MT', cert:'127035834' },
+    { img:'cards/21-anunoby-25-finest-purple-geometric.webp', p:'OG Anunoby',     yr:2025, set:'Topps Finest',    par:'Purple Geometric \u00B7 003/100',  num:'#27',     co:'PSA', g:10, gl:'GEM MT', cert:'153378088', tags:['/100'] },
+    { img:'cards/22-brunson-22-mosaic-fusion-red-yellow.webp', p:'Jalen Brunson', yr:2022, set:'Mosaic',          par:'Fusion Red & Yellow Choice',      num:'#95',     co:'PSA', g:9,  gl:'MINT',   cert:'154772080' },
+    { img:'cards/23-brunson-24-optic-blue.webp',          p:'Jalen Brunson',      yr:2024, set:'Donruss Optic',   par:'Blue',                            num:'#78',     co:'PSA', g:10, gl:'GEM MT', cert:'154772076' },
+    { img:'cards/24-brunson-24-prizm-jade-dragon-scale.webp', p:'Jalen Brunson',  yr:2024, set:'Panini Prizm',    par:'Jade Dragon Scale Prizm',         num:'#217',    co:'PSA', g:10, gl:'GEM MT', cert:'133238152' },
+    { img:'cards/25-brunson-23-phoenix-fade-to-black.webp', p:'Jalen Brunson',    yr:2023, set:'Phoenix',         par:'Fade to Black \u00B7 White Ice',   num:'#1',      co:'PSA', g:9,  gl:'MINT',   cert:'100828714' },
+    { img:'cards/26-robinson-18-prizm-base.webp',         p:'Mitchell Robinson',  yr:2018, set:'Panini Prizm',    par:'Base \u00B7 Rookie',              num:'#227',    co:'PSA', g:10, gl:'GEM MT', cert:'49615493', tags:['RC'] },
+    { img:'cards/27-robinson-19-prizm-green-pulsar.webp', p:'Mitchell Robinson',  yr:2019, set:'Panini Prizm',    par:'Green Pulsar',                    num:'#178',    co:'PSA', g:10, gl:'GEM MT', cert:'46707220' },
+    { img:'cards/28-robinson-19-prizm-red.webp',          p:'Mitchell Robinson',  yr:2019, set:'Panini Prizm',    par:'Red Prizm',                       num:'#178',    co:'PSA', g:10, gl:'GEM MT', cert:'50591997' },
+    { img:'cards/29-robinson-18-optic-hyper-pink.webp',   p:'Mitchell Robinson',  yr:2018, set:'Donruss Optic',   par:'Hyper Pink \u00B7 Rated Rookie',  num:'#163',    co:'PSA', g:10, gl:'GEM MT', cert:'43448165', tags:['RC'] },
+    { img:'cards/30-robinson-18-prizm-base-2.webp',       p:'Mitchell Robinson',  yr:2018, set:'Panini Prizm',    par:'Base \u00B7 Rookie',              num:'#227',    co:'PSA', g:10, gl:'GEM MT', cert:'57448848', tags:['RC'] },
+    { img:'cards/31-robinson-19-optic-white-sparkle.webp',p:'Mitchell Robinson',  yr:2019, set:'Donruss Optic',   par:'White Sparkle',                   num:'#83',     co:'PSA', g:10, gl:'GEM MT', cert:'56202851' }
   ];
 
   const E = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -874,6 +886,11 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
       '</div>'+
     '</div></div>';
   document.body.appendChild(vaultEl);
+
+  /* Stamp the live count into the card button so it can never drift */
+  document.querySelectorAll('[data-open-vault] .vb-txt').forEach(el=>{
+    el.textContent = 'View the vault \u00B7 ' + CARDS.length + ' graded slabs';
+  });
 
   /* ---- Lightbox shell ---- */
   const lb = document.createElement('div');
