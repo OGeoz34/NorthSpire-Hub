@@ -144,6 +144,137 @@ a{ color:inherit; text-decoration:none; }
 .ask .ask-arrow{ width:15px; height:15px; flex:none; transition:transform .25s ease; }
 .ask:hover .ask-arrow{ transform:translateX(3px); }
 
+/* ==========================================================================
+   THE VAULT — graded slab gallery
+   ========================================================================== */
+.vault-btn{
+  display:flex; align-items:center; gap:12px; width:100%;
+  margin-top:16px; padding:12px 14px; border-radius:12px; cursor:pointer;
+  border:1px solid var(--border-lit); background:var(--surface-2);
+  color:var(--text); font-size:13px; font-family:var(--font-body); text-align:left;
+  transition:border-color .25s ease, background .25s ease, transform .2s ease, box-shadow .25s ease;
+}
+.vault-btn:hover{ border-color:#F58426; background:#161c26; transform:translateY(-1px); box-shadow:0 8px 24px -12px rgba(245,132,38,.35); }
+.vault-btn:active{ transform:scale(.99); }
+.vb-flag{ flex:none; width:5px; height:22px; border-radius:2px; background:#d33; box-shadow:0 0 10px -2px rgba(221,51,51,.7); }
+.vb-txt{ flex:1; }
+.vb-arrow{ width:15px; height:15px; flex:none; transition:transform .25s ease; }
+.vault-btn:hover .vb-arrow{ transform:translateX(3px); }
+
+/* Overlay */
+.vault{ position:fixed; inset:0; z-index:80; display:none; }
+.vault.open{ display:block; }
+.vault-veil{ position:absolute; inset:0; background:rgba(6,8,12,.86); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
+.vault-veil::before,.vault-veil::after{
+  content:""; position:absolute; width:52vw; height:52vw; border-radius:50%; filter:blur(90px); opacity:.16; pointer-events:none;
+}
+.vault-veil::before{ top:-18vw; left:-14vw; background:#006BB6; }
+.vault-veil::after{ bottom:-20vw; right:-14vw; background:#F58426; }
+.vault-panel{ position:relative; height:100%; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+.vault-inner{ max-width:1180px; margin:0 auto; padding:26px 18px 70px; }
+
+.vault-head{ display:flex; align-items:flex-start; gap:14px; margin-bottom:6px; }
+.vault-title h2{ font-family:var(--font-display); font-weight:400; font-size:clamp(24px,5vw,34px); letter-spacing:.03em; }
+.vault-title .vsub{ color:var(--muted); font-size:13px; margin-top:6px; letter-spacing:.04em; }
+.vault-close{
+  margin-left:auto; flex:none; width:40px; height:40px; border-radius:50%; cursor:pointer;
+  border:1px solid var(--border-lit); background:var(--glass); color:var(--text);
+  display:grid; place-items:center; font-size:17px; line-height:1;
+  transition:border-color .2s ease, transform .2s ease;
+}
+.vault-close:hover{ border-color:#F58426; transform:rotate(90deg); }
+
+.vault-stats{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 4px; }
+.vstat{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted);
+  border:1px solid var(--border); background:var(--surface); border-radius:20px; padding:6px 12px; }
+.vstat strong{ color:var(--text); font-weight:600; }
+
+.vault-filters{ display:flex; gap:8px; flex-wrap:wrap; margin:14px 0 22px; }
+.vf{ font-size:12px; letter-spacing:.05em; color:var(--muted); cursor:pointer;
+  border:1px solid var(--border); background:var(--surface); border-radius:20px; padding:7px 14px;
+  transition:color .2s ease, border-color .2s ease, background .2s ease; font-family:var(--font-body); }
+.vf:hover{ color:var(--text); border-color:var(--border-lit); }
+.vf.active{ color:#0a0c10; background:var(--accent); border-color:var(--accent); font-weight:600; }
+
+/* Slab wall — masonry columns preserve each slab's natural height */
+.vault-grid{ columns:4 230px; column-gap:16px; }
+.slab{ break-inside:avoid; margin:0 0 16px; cursor:pointer; position:relative;
+  border-radius:14px; border:1px solid var(--border); background:var(--surface);
+  overflow:hidden; transform-style:preserve-3d; will-change:transform;
+  transition:transform .18s ease, border-color .25s ease, box-shadow .25s ease, opacity .5s ease;
+}
+.slab.hide{ display:none; }
+.slab:hover{ border-color:var(--border-lit); box-shadow:0 22px 44px -18px rgba(0,0,0,.75); z-index:2; }
+.slab-flag{ height:5px; background:#d33; }                    /* the PSA label bar */
+.slab-flag.alt{ background:#8c95a3; }                          /* non-PSA grader */
+.slab img{ display:block; width:100%; height:auto; }
+.slab-meta{ padding:10px 12px 12px; position:relative; }
+.slab-meta .sp{ font-family:var(--font-display); font-size:15px; letter-spacing:.03em; }
+.slab-meta .ss{ font-size:11px; color:var(--faint); margin-top:3px; letter-spacing:.04em; line-height:1.45; }
+.slab-grade{ position:absolute; top:-16px; right:10px; min-width:34px; height:34px; padding:0 8px;
+  border-radius:9px; display:grid; place-items:center;
+  background:#d33; color:#fff; font-weight:700; font-size:15px; letter-spacing:.02em;
+  box-shadow:0 6px 16px -6px rgba(221,51,51,.7); }
+.slab-grade.alt{ background:#3a424e; box-shadow:none; }
+.slab-tags{ position:absolute; top:12px; left:8px; display:flex; flex-direction:column; gap:5px; }
+.stag{ font-size:9px; font-weight:700; letter-spacing:.12em; padding:3px 7px; border-radius:5px;
+  background:rgba(8,10,14,.78); color:#f0c987; border:1px solid rgba(240,201,135,.35); backdrop-filter:blur(4px); }
+
+/* Holo sheen — sweeps on hover, like tilting a refractor under light */
+.slab::after{ content:""; position:absolute; inset:0; pointer-events:none; opacity:0;
+  background:linear-gradient(115deg, transparent 30%, rgba(163,196,220,.16) 42%, rgba(245,132,38,.10) 50%, rgba(163,196,220,.16) 58%, transparent 70%);
+  background-size:280% 100%; background-position:110% 0; transition:opacity .3s ease; }
+@media (hover:hover) and (prefers-reduced-motion: no-preference){
+  .slab:hover::after{ opacity:1; animation:sheen 1.6s ease forwards; }
+  @keyframes sheen{ to{ background-position:-40% 0; } }
+}
+
+/* Lightbox */
+.vlb{ position:fixed; inset:0; z-index:90; display:none; }
+.vlb.open{ display:block; }
+.vlb-veil{ position:absolute; inset:0; background:rgba(4,5,8,.92); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.vlb-box{ position:relative; height:100%; display:grid; grid-template-columns:1fr minmax(250px,320px);
+  gap:0; max-width:1080px; margin:0 auto; padding:56px 18px 32px; align-items:center; }
+.vlb-imgwrap{ display:grid; place-items:center; height:100%; min-height:0; }
+.vlb-imgwrap img{ max-width:100%; max-height:calc(100vh - 110px); border-radius:12px;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.9); }
+.vlb-meta{ padding:0 6px 0 28px; }
+.vlb-meta .eyebrow{ font-size:10.5px; letter-spacing:.28em; text-transform:uppercase; color:var(--faint); margin-bottom:10px; }
+.vlb-meta h3{ font-family:var(--font-display); font-weight:400; font-size:26px; letter-spacing:.02em; margin-bottom:4px; }
+.vlb-meta .set{ color:var(--muted); font-size:14px; line-height:1.55; }
+.vlb-rows{ margin:18px 0; border-top:1px solid var(--border); }
+.vlb-row{ display:flex; justify-content:space-between; gap:14px; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.vlb-row .k{ color:var(--faint); letter-spacing:.08em; text-transform:uppercase; font-size:10.5px; padding-top:2px; }
+.vlb-row .v{ color:var(--text); text-align:right; }
+.vlb-cert{ display:inline-flex; align-items:center; gap:7px; margin-top:4px; font-size:12.5px;
+  color:var(--accent); text-decoration:none; border-bottom:1px dashed rgba(163,196,220,.4); padding-bottom:2px; }
+.vlb-cert:hover{ border-bottom-style:solid; }
+.vlb-count{ position:absolute; top:20px; left:50%; transform:translateX(-50%);
+  font-size:11px; letter-spacing:.2em; color:var(--faint); }
+.vlb-close{ position:absolute; top:14px; right:16px; width:40px; height:40px; border-radius:50%;
+  border:1px solid var(--border-lit); background:var(--glass); color:var(--text); cursor:pointer;
+  display:grid; place-items:center; font-size:17px; transition:border-color .2s, transform .2s; }
+.vlb-close:hover{ border-color:#F58426; transform:rotate(90deg); }
+.vlb-nav{ position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%;
+  border:1px solid var(--border-lit); background:var(--glass); color:var(--text); cursor:pointer;
+  display:grid; place-items:center; transition:border-color .2s, background .2s; }
+.vlb-nav:hover{ border-color:var(--accent); background:var(--surface-2); }
+.vlb-nav svg{ width:18px; height:18px; }
+.vlb-prev{ left:14px; } .vlb-next{ right:14px; }
+
+@media (max-width:760px){
+  .vlb-box{ grid-template-columns:1fr; padding:56px 14px 24px; overflow-y:auto; align-items:start; }
+  .vlb-imgwrap img{ max-height:58vh; }
+  .vlb-meta{ padding:18px 4px 40px; }
+  .vlb-nav{ top:auto; bottom:12px; transform:none; }
+  .vlb-prev{ left:calc(50% - 56px); } .vlb-next{ right:calc(50% - 56px); }
+  .vault-grid{ columns:2 150px; column-gap:12px; }
+  .slab{ margin-bottom:12px; }
+}
+@media (prefers-reduced-motion: reduce){
+  .slab, .vault-close, .vlb-close, .vb-arrow{ transition:none; }
+}
+
 /* Thesis / note */
 .pos-note{ color:var(--muted); font-size:14px; line-height:1.6; }
 .pos-note .lbl{ color:var(--faint); font-size:11px; letter-spacing:.12em; text-transform:uppercase; display:block; margin-bottom:5px; }
@@ -391,13 +522,14 @@ const POSITIONS = [
     note:'The most iconic modern Pok\u00E9mon chase card. It held its value through the market crash better than almost anything else \u2014 a blue-chip collectible and a long-term hold. Tracked live in MyTCG Ledger.'
   },
   {
-    category:'sports', asset:'Knicks PSA 10 Collection', sub:'Jalen Brunson + all Knicks starters',
+    category:'sports', asset:'Knicks Graded Collection', sub:'Brunson, Towns, Bridges, Hart & more \u00B7 19 slabs',
+    gallery:true,
     action:'buy', status:'open',
     purchaseDate:'2026-07-07',
     purchasePrice:'',            // total in so far, or leave blank while accumulating
     currentPrice:'',             // blank = accumulating, no P&L yet
     conviction:4,
-    note:'Accumulating gem-mint PSA 10 rookies and key cards of Jalen Brunson and the Knicks starting five \u2014 a bet on the franchise\u2019s trajectory and on New York demand holding strong.'
+    note:'A graded vault of the current core \u2014 Brunson, Towns, Bridges, Hart, Anunoby, Robinson \u2014 plus a Melo throwback and a Kolek rookie. Grades run PSA 8 through 10, anchored by nine gem mints, a KAT on-card auto /150, and a Moonfall /99. A bet on the franchise\u2019s trajectory and on New York demand holding strong.'
   }
 ];
 
@@ -533,6 +665,15 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
         '<svg class="ask-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
       '</a>';
 
+    /* The vault — opens the slab gallery for positions that have one */
+    const vaultBtn = p.gallery
+      ? '<button type="button" class="vault-btn" data-open-vault>'+
+          '<span class="vb-flag" aria-hidden="true"></span>'+
+          '<span class="vb-txt">View the vault \u00B7 19 graded slabs</span>'+
+          '<svg class="vb-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'+
+        '</button>'
+      : '';
+
     return ''+
     '<article class="position" data-cat="'+esc(p.category)+'">'+
       '<div class="pos-top">'+
@@ -548,6 +689,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
       receipt+
       (metricHTML?'<div class="pos-metrics">'+metricHTML+'</div>':'')+
       (p.note?'<div class="pos-note"><span class="lbl">Thesis</span>'+esc(p.note)+'</div>':'')+
+      vaultBtn+
       askBtn+
     '</article>';
   }
@@ -653,6 +795,187 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
   make(); frame();
   window.addEventListener('resize',()=>{ cancelAnimationFrame(raf); make(); frame(); });
   document.addEventListener('visibilitychange',()=>{ cancelAnimationFrame(raf); if(!document.hidden&&!reduced){ last=0; frame(); } });
+})();
+/* ==========================================================================
+   THE VAULT — Knicks graded slab gallery.
+   ADD A CARD: drop the photo in /cards, copy one { } block, fill it in.
+   img paths are relative — keep the "cards" folder next to this file.
+   co:'PSA' cards get a live link to PSA's cert database for verification.
+   ========================================================================== */
+(function vault(){
+  const CARDS = [
+    { img:'cards/01-brunson-24-optic-orange-shock.webp',  p:'Jalen Brunson',      yr:2024, set:'Donruss Optic',    par:'Orange Shock',                    num:'#78',     co:'PSA', g:10, gl:'GEM MT', cert:'159741797' },
+    { img:'cards/02-anthony-14-prizm.webp',               p:'Carmelo Anthony',    yr:2014, set:'Panini Prizm',     par:'Base',                            num:'#89',     co:'PSA', g:10, gl:'GEM MT', cert:'134729465' },
+    { img:'cards/03-brunson-24-court-kings-amber.webp',   p:'Jalen Brunson',      yr:2024, set:'Court Kings',      par:'Amber',                           num:'#51',     co:'PSA', g:9,  gl:'MINT',   cert:'131696526' },
+    { img:'cards/04-kolek-24-optic-pink-velocity.webp',   p:'Tyler Kolek',        yr:2024, set:'Donruss Optic',    par:'Pink Velocity \u00B7 Rated Rookie', num:'#257',  co:'PSA', g:10, gl:'GEM MT', cert:'144447507', tags:['RC'] },
+    { img:'cards/05-bridges-24-prizm-black-mojo.webp',    p:'Mikal Bridges',      yr:2024, set:'Prizm Black',      par:'Mojo Prizm',                      num:'#158',    co:'PSA', g:10, gl:'GEM MT', cert:'134932068' },
+    { img:'cards/06-brunson-24-select-clutch-tiedye.webp',p:'Jalen Brunson',      yr:2024, set:'Select',           par:'Clutch \u00B7 Tie-Dye Prizm',     num:'#20',     co:'PSA', g:9,  gl:'MINT',   cert:'157016365' },
+    { img:'cards/07-brunson-25-topps-midnight-moonfall.webp', p:'Jalen Brunson',  yr:2025, set:'Topps Midnight',   par:'Moonfall\u2013Twilight \u00B7 55/99', num:'#MF-15', co:'PSA', g:8, gl:'NM-MT', cert:'159105698', tags:['/99'] },
+    { img:'cards/08-hart-25-topps-chrome-xfractor.webp',  p:'Josh Hart',          yr:2025, set:'Topps Chrome',     par:'X-Fractor',                       num:'#160',    co:'PSA', g:9,  gl:'MINT',   cert:'144949289' },
+    { img:'cards/09-brunson-25-topps-big-box-ballers.webp', p:'Jalen Brunson',    yr:2025, set:'Topps',            par:'Big Box Ballers',                 num:'#BB-35',  co:'PSA', g:9,  gl:'MINT',   cert:'157943539' },
+    { img:'cards/10-brunson-24-mosaic-purple.webp',       p:'Jalen Brunson',      yr:2024, set:'Mosaic',           par:'Purple \u00B7 City Edition',      num:'#284',    co:'PSA', g:8,  gl:'NM-MT',  cert:'140515134' },
+    { img:'cards/11-robinson-18-revolution-groove.webp',  p:'Mitchell Robinson',  yr:2018, set:'Panini Revolution',par:'Groove \u00B7 Rookie',            num:'#114',    co:'PSA', g:10, gl:'GEM MT', cert:'44470338', tags:['RC'] },
+    { img:'cards/12-bridges-24-prizm-black-purple.webp',  p:'Mikal Bridges',      yr:2024, set:'Prizm Black',      par:'Purple Prizm',                    num:'#158',    co:'PSA', g:10, gl:'GEM MT', cert:'135996842' },
+    { img:'cards/13-brunson-24-obsidian-purple-flood.webp', p:'Jalen Brunson',    yr:2024, set:'Obsidian',         par:'Electric Etch Purple Flood',      num:'#3',      co:'PSA', g:8,  gl:'NM-MT',  cert:'150917951' },
+    { img:'cards/14-anunoby-25-select-orange-flash.webp', p:'OG Anunoby',         yr:2025, set:'Panini Select',    par:'Orange Flash',                    num:'#11',     co:'4 Bases Sports Cards', g:10, gl:'GEM MINT', cert:'' },
+    { img:'cards/15-hart-22-obsidian-purple-flood.webp',  p:'Josh Hart',          yr:2022, set:'Obsidian',         par:'Electric Etch Purple Flood',      num:'#54',     co:'PSA', g:9,  gl:'MINT',   cert:'92713578' },
+    { img:'cards/16-towns-25-topps-chrome-auto.webp',     p:'Karl-Anthony Towns', yr:2025, set:'Topps Chrome',     par:'Sig Style \u00B7 Blue Refractor \u00B7 Auto 38/150', num:'#SS-KAT', co:'PSA', g:9, gl:'MINT', cert:'152932315', tags:['AUTO','/150'] },
+    { img:'cards/17-brunson-23-phoenix-pyro-purple.webp', p:'Jalen Brunson',      yr:2023, set:'Phoenix',          par:'Pyro \u00B7 Purple',              num:'#4',      co:'PSA', g:10, gl:'GEM MT', cert:'116075072' },
+    { img:'cards/18-towns-23-cosmic-chrome-gold.webp',    p:'Karl-Anthony Towns', yr:2023, set:'Cosmic Chrome',    par:'Gold Interstellar',               num:'#74',     co:'PSA', g:10, gl:'GEM MT', cert:'110755696' },
+    { img:'cards/19-robinson-18-optic-blue-velocity.webp',p:'Mitchell Robinson',  yr:2018, set:'Donruss Optic',    par:'Blue Velocity \u00B7 Rated Rookie', num:'#163',  co:'PSA', g:10, gl:'GEM MT', cert:'52333765', tags:['RC'] }
+  ];
+
+  const E = s => String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let visible = CARDS.map((_,i)=>i);   /* indices matching the active filter */
+  let cur = 0;                          /* lightbox position within `visible` */
+  let lastFocus = null;
+
+  /* ---- Build the overlay once ---- */
+  const psa10 = CARDS.filter(c=>c.co==='PSA'&&c.g===10).length;
+  const players = [...new Set(CARDS.map(c=>c.p))];
+  const byCount = players.map(p=>[p, CARDS.filter(c=>c.p===p).length]).sort((a,b)=>b[1]-a[1]);
+
+  const vaultEl = document.createElement('div');
+  vaultEl.className = 'vault';
+  vaultEl.innerHTML =
+    '<div class="vault-veil" data-vclose></div>'+
+    '<div class="vault-panel"><div class="vault-inner">'+
+      '<div class="vault-head">'+
+        '<div class="vault-title"><h2>The Knicks Vault</h2>'+
+        '<div class="vsub">Every slab in the collection \u00B7 tap any card to inspect it</div></div>'+
+        '<button class="vault-close" data-vclose aria-label="Close the vault">\u2715</button>'+
+      '</div>'+
+      '<div class="vault-stats">'+
+        '<span class="vstat"><strong>'+CARDS.length+'</strong> slabs</span>'+
+        '<span class="vstat"><strong>'+psa10+'</strong> PSA 10s</span>'+
+        '<span class="vstat"><strong>'+players.length+'</strong> players</span>'+
+      '</div>'+
+      '<div class="vault-filters" role="tablist">'+
+        '<button class="vf active" data-f="all">All '+CARDS.length+'</button>'+
+        byCount.map(([p,n])=>'<button class="vf" data-f="'+E(p)+'">'+E(p.split(' ').pop())+' '+n+'</button>').join('')+
+      '</div>'+
+      '<div class="vault-grid">'+
+        CARDS.map((c,i)=>{
+          const alt = c.co!=='PSA' ? ' alt' : '';
+          const tags = (c.tags||[]).map(t=>'<span class="stag">'+E(t)+'</span>').join('');
+          return '<figure class="slab" data-i="'+i+'" tabindex="0" role="button" '+
+            'aria-label="'+E(c.p+' '+c.yr+' '+c.set+' '+c.par+', graded '+c.g)+'">'+
+            '<div class="slab-flag'+alt+'"></div>'+
+            (tags?'<div class="slab-tags">'+tags+'</div>':'')+
+            '<img loading="lazy" src="'+E(c.img)+'" alt="'+E(c.p+' '+c.set+' '+c.par)+'">'+
+            '<figcaption class="slab-meta">'+
+              '<span class="slab-grade'+alt+'">'+c.g+'</span>'+
+              '<div class="sp">'+E(c.p)+'</div>'+
+              '<div class="ss">'+c.yr+' '+E(c.set)+' \u00B7 '+E(c.par)+'</div>'+
+            '</figcaption>'+
+          '</figure>';
+        }).join('')+
+      '</div>'+
+    '</div></div>';
+  document.body.appendChild(vaultEl);
+
+  /* ---- Lightbox shell ---- */
+  const lb = document.createElement('div');
+  lb.className = 'vlb';
+  lb.innerHTML =
+    '<div class="vlb-veil" data-lbclose></div>'+
+    '<div class="vlb-count" id="vlb-count"></div>'+
+    '<button class="vlb-close" data-lbclose aria-label="Close">\u2715</button>'+
+    '<button class="vlb-nav vlb-prev" data-lbnav="-1" aria-label="Previous card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>'+
+    '<button class="vlb-nav vlb-next" data-lbnav="1" aria-label="Next card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>'+
+    '<div class="vlb-box"><div class="vlb-imgwrap"><img id="vlb-img" alt=""></div><div class="vlb-meta" id="vlb-meta"></div></div>';
+  document.body.appendChild(lb);
+
+  function renderLB(){
+    const c = CARDS[visible[cur]];
+    const img = document.getElementById('vlb-img');
+    img.src = c.img; img.alt = c.p+' '+c.set+' '+c.par;
+    document.getElementById('vlb-count').textContent = (cur+1)+' / '+visible.length;
+    const cert = (c.co==='PSA' && c.cert)
+      ? '<a class="vlb-cert" href="https://www.psacard.com/cert/'+E(c.cert)+'" target="_blank" rel="noopener">Verify cert '+E(c.cert)+' at PSA \u2197</a>'
+      : '<span class="vlb-cert" style="border:none;color:var(--faint)">Graded by '+E(c.co)+'</span>';
+    document.getElementById('vlb-meta').innerHTML =
+      '<div class="eyebrow">'+c.yr+' \u00B7 '+E(c.set)+'</div>'+
+      '<h3>'+E(c.p)+'</h3>'+
+      '<div class="set">'+E(c.par)+' \u00B7 '+E(c.num)+'</div>'+
+      '<div class="vlb-rows">'+
+        '<div class="vlb-row"><span class="k">Grade</span><span class="v">'+E(c.co)+' '+c.g+' \u00B7 '+E(c.gl)+'</span></div>'+
+        (c.tags&&c.tags.length?'<div class="vlb-row"><span class="k">Notes</span><span class="v">'+c.tags.map(E).join(' \u00B7 ')+'</span></div>':'')+
+      '</div>'+cert;
+  }
+  function openLB(i){ cur=i; renderLB(); lb.classList.add('open'); }
+  function closeLB(){ lb.classList.remove('open'); }
+  function nav(d){ cur=(cur+d+visible.length)%visible.length; renderLB(); }
+
+  function openVault(){
+    lastFocus = document.activeElement;
+    vaultEl.classList.add('open');
+    document.body.style.overflow='hidden';
+    vaultEl.querySelector('.vault-close').focus();
+  }
+  function closeVault(){
+    closeLB();
+    vaultEl.classList.remove('open');
+    document.body.style.overflow='';
+    if(lastFocus) lastFocus.focus();
+  }
+
+  /* ---- Events ---- */
+  document.addEventListener('click', e=>{
+    if(e.target.closest('[data-open-vault]')) return openVault();
+    if(e.target.closest('[data-vclose]')) return closeVault();
+    if(e.target.closest('[data-lbclose]')) return closeLB();
+    const n = e.target.closest('[data-lbnav]'); if(n) return nav(+n.dataset.lbnav);
+    const s = e.target.closest('.slab');
+    if(s){ const idx = visible.indexOf(+s.dataset.i); if(idx>-1) openLB(idx); return; }
+    const f = e.target.closest('.vf');
+    if(f){
+      vaultEl.querySelectorAll('.vf').forEach(b=>b.classList.remove('active'));
+      f.classList.add('active');
+      const key = f.dataset.f;
+      visible = CARDS.map((c,i)=>[c,i]).filter(([c])=>key==='all'||c.p===key).map(([,i])=>i);
+      vaultEl.querySelectorAll('.slab').forEach(el=> el.classList.toggle('hide', !visible.includes(+el.dataset.i)));
+    }
+  });
+  document.addEventListener('keydown', e=>{
+    if(lb.classList.contains('open')){
+      if(e.key==='Escape') closeLB();
+      else if(e.key==='ArrowRight') nav(1);
+      else if(e.key==='ArrowLeft') nav(-1);
+      return;
+    }
+    if(vaultEl.classList.contains('open')){
+      if(e.key==='Escape') closeVault();
+      else if((e.key==='Enter'||e.key===' ') && document.activeElement.classList?.contains('slab')){
+        e.preventDefault();
+        const idx = visible.indexOf(+document.activeElement.dataset.i);
+        if(idx>-1) openLB(idx);
+      }
+    }
+  });
+
+  /* Swipe in the lightbox */
+  let tx=null;
+  lb.addEventListener('touchstart', e=>{ tx=e.changedTouches[0].clientX; }, {passive:true});
+  lb.addEventListener('touchend', e=>{
+    if(tx===null) return;
+    const dx = e.changedTouches[0].clientX - tx; tx=null;
+    if(Math.abs(dx)>48) nav(dx<0?1:-1);
+  }, {passive:true});
+
+  /* Pointer-tracked 3D tilt — desktop, motion-safe only */
+  if(!reduced && matchMedia('(hover:hover) and (pointer:fine)').matches){
+    vaultEl.querySelectorAll('.slab').forEach(el=>{
+      el.addEventListener('pointermove', e=>{
+        const r = el.getBoundingClientRect();
+        const rx = ((e.clientY-r.top)/r.height - .5) * -7;
+        const ry = ((e.clientX-r.left)/r.width - .5) * 9;
+        el.style.transform = 'perspective(700px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translateY(-3px)';
+      });
+      el.addEventListener('pointerleave', ()=>{ el.style.transform=''; });
+    });
+  }
 })();
 </script>
 
