@@ -121,11 +121,28 @@ a{ color:inherit; text-decoration:none; }
 /* Metrics grid (entry/target/size/P&L — any field optional) */
 .pos-metrics{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:14px; }
 .metric{ background:var(--surface); padding:12px 14px; }
+.metric:last-child:nth-child(odd){ grid-column:1 / -1; }
 .position:hover .metric{ background:var(--surface-2); }
 .metric .mk{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:4px; }
 .metric .mv{ font-size:15px; font-variant-numeric:tabular-nums; }
 .metric .mv.up{ color:var(--up); } .metric .mv.down{ color:var(--down); }
 .metric .mv .mby{ font-size:11px; color:var(--faint); letter-spacing:.06em; font-variant-numeric:normal; }
+
+/* The ask — CTA into The Exchange */
+.ask{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-top:16px; padding:12px 14px; border-radius:12px;
+  border:1px dashed rgba(203,184,146,.32); background:rgba(203,184,146,.05);
+  color:var(--muted); font-size:13px; line-height:1.35; text-decoration:none;
+  transition:border-color .25s ease, background .25s ease, color .25s ease, transform .2s ease;
+}
+.ask:hover{
+  border-color:rgba(203,184,146,.7); border-style:solid;
+  background:rgba(203,184,146,.1); color:var(--text); transform:translateY(-1px);
+}
+.ask:active{ transform:scale(.99); }
+.ask .ask-arrow{ width:15px; height:15px; flex:none; transition:transform .25s ease; }
+.ask:hover .ask-arrow{ transform:translateX(3px); }
 
 /* Thesis / note */
 .pos-note{ color:var(--muted); font-size:14px; line-height:1.6; }
@@ -338,7 +355,7 @@ const POSITIONS = [
     purchaseDate:'2026-07-07',
     purchasePrice:'$28.00',      // cost basis
     currentPrice:'$81.00',       // current market (edit to refresh)
-    target:'$500', targetBy:'2028', conviction:5,
+    conviction:5,
     note:'High-throughput layer-1 with real on-chain activity and growing institutional interest. A long-term conviction hold, not a trade.'
   },
   {
@@ -352,7 +369,7 @@ const POSITIONS = [
     purchaseDate:'2026-07-07',
     purchasePrice:'$1,150',      // blended basis — see note above
     currentPrice:'$1,794',
-    target:'$4,500', targetBy:'2028', conviction:5,
+    conviction:5,
     note:'Ethereum is the settlement layer the rest of the space is actually built on \u2014 the bulk of stablecoins, tokenized assets, and DeFi either live on it or run on rollups that settle back to it. It has the deepest developer base of any chain by a wide margin, and since the shift to proof-of-stake it behaves like a productive asset rather than a static one: it can be staked for yield, and the fee burn retires supply as the network gets used. Spot ETFs opened the door for institutions to own it without ever touching a wallet. I averaged in at $800 and $1,500 and I am not trading this one \u2014 I am holding the infrastructure and letting the layer-2 ecosystem grow into it.'
   },
   {
@@ -361,7 +378,7 @@ const POSITIONS = [
     purchaseDate:'2026-07-07',
     purchasePrice:'$30.00',      // cost basis
     currentPrice:'$44.68',
-    target:'$64', targetBy:'2030', conviction:4,
+    conviction:4,
     note:'An ETF that weights companies by the strength of their corporate culture and how they treat their people. A bet that culture compounds into returns over time.'
   },
   {
@@ -370,7 +387,7 @@ const POSITIONS = [
     purchaseDate:'2026-07-07',
     purchasePrice:'$3,000',      // cost basis from MyTCG Ledger
     currentPrice:'$4,500',       // best price from MyTCG Ledger (update as market moves)
-    target:'$15,000', targetBy:'2028', conviction:5,
+    conviction:5,
     note:'The most iconic modern Pok\u00E9mon chase card. It held its value through the market crash better than almost anything else \u2014 a blue-chip collectible and a long-term hold. Tracked live in MyTCG Ledger.'
   },
   {
@@ -379,7 +396,7 @@ const POSITIONS = [
     purchaseDate:'2026-07-07',
     purchasePrice:'',            // total in so far, or leave blank while accumulating
     currentPrice:'',             // blank = accumulating, no P&L yet
-    target:'', conviction:4,
+    conviction:4,
     note:'Accumulating gem-mint PSA 10 rookies and key cards of Jalen Brunson and the Knicks starting five \u2014 a bet on the franchise\u2019s trajectory and on New York demand holding strong.'
   }
 ];
@@ -392,6 +409,15 @@ const GOAL = {
   saved: 42000,          // <- how much you have saved so far (EDIT THIS)
   target: 1000000,       // <- the goal
   note:'A real, boring, cash-flowing business \u2014 the kind that quietly funds everything else. Every dollar set aside is a step toward owning it outright.'
+};
+
+/* ---- THE ASK — the button on every card. Instead of publishing a price
+        target, invite the room to call it. Links into The Exchange with the
+        question pre-written and the category pre-selected. ---- */
+const ASK = {
+  label: 'What do you think the price will be \u2014 and by when?',
+  href:  'exchange.html',              // <- The Exchange
+  category: 'Investment Idea'          // must match a category in exchange.html
 };
 
 /* Optional: your public note about what these numbers mean. */
@@ -496,6 +522,17 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
         (p.purchasePrice?' at <strong>'+esc(p.purchasePrice)+'</strong>':'')+'</div>'
       : '';
 
+    /* The ask — invite a call instead of publishing one */
+    const askURL = ASK.href +
+      '?ask=' + encodeURIComponent(p.asset) +
+      (p.currentPrice ? '&at=' + encodeURIComponent(p.currentPrice) : '') +
+      '&cat=' + encodeURIComponent(ASK.category);
+    const askBtn =
+      '<a class="ask" href="'+esc(askURL)+'">' +
+        '<span class="ask-txt">'+esc(ASK.label)+'</span>' +
+        '<svg class="ask-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' +
+      '</a>';
+
     return ''+
     '<article class="position" data-cat="'+esc(p.category)+'">'+
       '<div class="pos-top">'+
@@ -511,6 +548,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
       receipt+
       (metricHTML?'<div class="pos-metrics">'+metricHTML+'</div>':'')+
       (p.note?'<div class="pos-note"><span class="lbl">Thesis</span>'+esc(p.note)+'</div>':'')+
+      askBtn+
     '</article>';
   }
 

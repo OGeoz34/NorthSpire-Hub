@@ -805,6 +805,48 @@ function revealAll(){
 }
 
 /* Starfield — same engine as every Northspire page */
+/* ==========================================================================
+   ASK PREFILL — arriving from the Investment Hub via a card's ask button:
+   exchange.html?ask=SOL&at=$81.00&cat=Investment%20Idea
+   Pre-writes the question in the composer, selects the category, and scrolls
+   to it. Works whether or not the visitor is signed in — if they're gated,
+   the draft is waiting for them the moment they sign in.
+   ========================================================================== */
+(function askPrefill(){
+  const q = new URLSearchParams(location.search);
+  const asset = (q.get('ask') || '').trim();
+  if(!asset) return;
+
+  const at  = (q.get('at')  || '').trim();
+  const cat = (q.get('cat') || '').trim();
+
+  const ta  = document.getElementById('composer-text');
+  const sel = document.getElementById('composer-cat');
+  if(!ta) return;
+
+  /* Don't clobber something the visitor already typed */
+  if(!ta.value.trim()){
+    ta.value = at
+      ? asset + ' is at ' + at + ' right now. Where do you think it lands \u2014 and by when?'
+      : 'Where do you think ' + asset + ' lands \u2014 and by when?';
+  }
+
+  if(sel && cat && CATS.includes(cat)) sel.value = cat;
+
+  /* Clean the URL so a refresh doesn't overwrite an edited draft */
+  history.replaceState(null, '', location.pathname);
+
+  const composer = document.getElementById('composer');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  (composer || ta).scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+
+  /* Only focus if they can actually type (composer isn't locked) */
+  if(composer && !composer.classList.contains('locked')){
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
+})();
+
 (function starfield(){
   const canvas=document.getElementById('sky'); if(!canvas) return;
   const ctx=canvas.getContext('2d'); const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
