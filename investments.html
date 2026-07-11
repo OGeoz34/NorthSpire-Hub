@@ -104,6 +104,9 @@ a{ color:inherit; text-decoration:none; }
   background:var(--accent-soft); border:1px solid rgba(163,196,220,.14);
   font-size:20px;
 }
+.pos-cat.has-logo{ background:rgba(255,255,255,.035); border-color:rgba(255,255,255,.09); padding:0; }
+.asset-logo{ width:22px; height:22px; display:block; overflow:visible; }
+.asset-logo.eth{ width:15px; height:24px; color:#e6ecf2; }
 .pos-id{ flex:1; min-width:0; }
 .pos-id h3{ font-family:var(--font-display); font-weight:400; font-size:19px; letter-spacing:.02em; }
 .pos-id .sub{ font-size:12.5px; color:var(--faint); margin-top:2px; letter-spacing:.04em; }
@@ -122,6 +125,7 @@ a{ color:inherit; text-decoration:none; }
 .metric .mk{ font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); margin-bottom:4px; }
 .metric .mv{ font-size:15px; font-variant-numeric:tabular-nums; }
 .metric .mv.up{ color:var(--up); } .metric .mv.down{ color:var(--down); }
+.metric .mv .mby{ font-size:11px; color:var(--faint); letter-spacing:.06em; font-variant-numeric:normal; }
 
 /* Thesis / note */
 .pos-note{ color:var(--muted); font-size:14px; line-height:1.6; }
@@ -284,6 +288,37 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
      note          your thesis / why
    ========================================================================== */
 
+/* ==========================================================================
+   ASSET LOGOS — official brand marks, drawn inline (no external requests).
+   Add a `logo:'key'` field to any position to use one of these instead of
+   the generic category glyph. To add another coin later, paste its SVG here
+   under a new key and reference it from the position.
+   ========================================================================== */
+const ASSET_LOGOS = {
+  /* Solana — official mark, brand gradient (#00FFA3 -> #DC1FFF) */
+  solana:
+    '<svg class="asset-logo" viewBox="0 0 397.7 311.7" role="img" aria-label="Solana">' +
+      '<defs><linearGradient id="solGrad" x1="360.9" y1="-37.5" x2="141.2" y2="383.3" ' +
+        'gradientUnits="userSpaceOnUse">' +
+        '<stop offset="0" stop-color="#00ffa3"/><stop offset="1" stop-color="#dc1fff"/>' +
+      '</linearGradient></defs>' +
+      '<path fill="url(#solGrad)" d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z"/>' +
+      '<path fill="url(#solGrad)" d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z"/>' +
+      '<path fill="url(#solGrad)" d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z"/>' +
+    '</svg>',
+
+  /* Ethereum — official mark, monochrome treatment (facets kept via opacity) */
+  ethereum:
+    '<svg class="asset-logo eth" viewBox="0 0 256 417" role="img" aria-label="Ethereum">' +
+      '<path fill="currentColor" fill-opacity=".55" d="M127.96 0l-2.8 9.5v275.67l2.8 2.79 127.96-75.63z"/>' +
+      '<path fill="currentColor" d="M127.96 0L0 212.32l127.96 75.64V154.16z"/>' +
+      '<path fill="currentColor" fill-opacity=".55" d="M127.96 312.19l-1.58 1.92v98.2l1.58 4.6L256 236.59z"/>' +
+      '<path fill="currentColor" d="M127.96 416.91v-104.72L0 236.59z"/>' +
+      '<path fill="currentColor" fill-opacity=".35" d="M127.96 287.96l127.96-75.64-127.96-58.16z"/>' +
+      '<path fill="currentColor" fill-opacity=".75" d="M0 212.32l127.96 75.64V154.16z"/>' +
+    '</svg>'
+};
+
 const CATEGORIES = {
   stocks:  { label: 'Stocks',      icon: '\uD83D\uDCC8' },
   crypto:  { label: 'Crypto',      icon: '\u25C8' },
@@ -298,21 +333,35 @@ const CATEGORIES = {
         purchaseDate is set to today as your timestamped receipt. ---- */
 const POSITIONS = [
   {
-    category:'crypto', asset:'SOL', sub:'Solana',
+    category:'crypto', asset:'SOL', sub:'Solana', logo:'solana',
     action:'buy', status:'open',
     purchaseDate:'2026-07-07',
-    purchasePrice:'',            // <- FILL IN what you paid per SOL
+    purchasePrice:'$28.00',      // cost basis
     currentPrice:'$81.00',       // current market (edit to refresh)
-    target:'$300', conviction:5,
+    target:'$500', targetBy:'2028', conviction:5,
     note:'High-throughput layer-1 with real on-chain activity and growing institutional interest. A long-term conviction hold, not a trade.'
+  },
+  {
+    /* ---- ETHEREUM — two entries: $800 and $1,500.
+            purchasePrice below is the BLENDED basis assuming you bought an
+            EQUAL NUMBER OF ETH at each price -> ($800 + $1,500) / 2 = $1,150.
+            If you instead spent equal DOLLARS at each entry, the true basis is
+            $1,043 (you got more coins at $800). Change the one number below. ---- */
+    category:'crypto', asset:'ETH', sub:'Ethereum', logo:'ethereum',
+    action:'buy', status:'open',
+    purchaseDate:'2026-07-07',
+    purchasePrice:'$1,150',      // blended basis — see note above
+    currentPrice:'$1,794',
+    target:'$4,500', targetBy:'2028', conviction:5,
+    note:'Ethereum is the settlement layer the rest of the space is actually built on \u2014 the bulk of stablecoins, tokenized assets, and DeFi either live on it or run on rollups that settle back to it. It has the deepest developer base of any chain by a wide margin, and since the shift to proof-of-stake it behaves like a productive asset rather than a static one: it can be staked for yield, and the fee burn retires supply as the network gets used. Spot ETFs opened the door for institutions to own it without ever touching a wallet. I averaged in at $800 and $1,500 and I am not trading this one \u2014 I am holding the infrastructure and letting the layer-2 ecosystem grow into it.'
   },
   {
     category:'stocks', asset:'HAPI', sub:'Harbor Human Capital Factor US Large Cap ETF',
     action:'buy', status:'open',
     purchaseDate:'2026-07-07',
-    purchasePrice:'',            // <- FILL IN your entry
+    purchasePrice:'$30.00',      // cost basis
     currentPrice:'$44.68',
-    target:'', conviction:4,
+    target:'$64', targetBy:'2030', conviction:4,
     note:'An ETF that weights companies by the strength of their corporate culture and how they treat their people. A bet that culture compounds into returns over time.'
   },
   {
@@ -321,7 +370,7 @@ const POSITIONS = [
     purchaseDate:'2026-07-07',
     purchasePrice:'$3,000',      // cost basis from MyTCG Ledger
     currentPrice:'$4,500',       // best price from MyTCG Ledger (update as market moves)
-    target:'', conviction:5,
+    target:'$15,000', targetBy:'2028', conviction:5,
     note:'The most iconic modern Pok\u00E9mon chase card. It held its value through the market crash better than almost anything else \u2014 a blue-chip collectible and a long-term hold. Tracked live in MyTCG Ledger.'
   },
   {
@@ -414,19 +463,26 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
 
   function card(p){
     const c = CATEGORIES[p.category] || CATEGORIES.other;
+    const mark = (p.logo && ASSET_LOGOS[p.logo]) ? ASSET_LOGOS[p.logo] : c.icon;
+    const markCls = (p.logo && ASSET_LOGOS[p.logo]) ? ' has-logo' : '';
     const g = gain(p);
     const plStr = g===null ? '' : (g>=0?'+':'')+g+'%';
     const plDir = g===null ? '' : (g>=0?' up':' down');
 
+    /* Target may carry a deadline year: '$4,500' + targetBy '2028' */
+    const targetHTML = p.target
+      ? esc(p.target) + (p.targetBy ? ' <span class="mby">by '+esc(p.targetBy)+'</span>' : '')
+      : '';
+
     const metrics = [
-      ['Bought', p.purchasePrice],
-      ['Now', p.currentPrice],
-      ['Target', p.target],
-      ['Gain', plStr]
+      ['Bought', esc(p.purchasePrice)],
+      ['Now', esc(p.currentPrice)],
+      ['Target', targetHTML],
+      ['Gain', esc(plStr)]
     ].filter(m => m[1] && String(m[1]).trim());
     const metricHTML = metrics.map(m=>{
       const dir = m[0]==='Gain' ? plDir : '';
-      return '<div class="metric"><div class="mk">'+esc(m[0])+'</div><div class="mv'+dir+'">'+esc(m[1])+'</div></div>';
+      return '<div class="metric"><div class="mk">'+esc(m[0])+'</div><div class="mv'+dir+'">'+m[1]+'</div></div>';
     }).join('');
 
     const conv = p.conviction ? '<span class="conv" title="Conviction '+p.conviction+'/5" aria-label="Conviction '+p.conviction+' of 5">'+
@@ -443,7 +499,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
     return ''+
     '<article class="position" data-cat="'+esc(p.category)+'">'+
       '<div class="pos-top">'+
-        '<span class="pos-cat" aria-hidden="true">'+ c.icon +'</span>'+
+        '<span class="pos-cat'+markCls+'" aria-hidden="true">'+ mark +'</span>'+
         '<div class="pos-id">'+
           '<h3>'+esc(p.asset)+ conv +'</h3>'+
           '<div class="sub">'+esc(c.label)+(p.sub?' \u00B7 '+esc(p.sub):'')+'</div>'+
