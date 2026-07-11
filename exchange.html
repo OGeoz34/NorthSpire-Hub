@@ -251,6 +251,52 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
 .composer.locked .lock-veil{ display:flex; }
 .lock-veil p{ font-size:13.5px; color:var(--muted); max-width:34ch; }
 
+/* ==========================================================================
+   FOUNDER INTRO BANNER
+   ========================================================================== */
+.intro{
+  padding:22px 24px; margin-bottom:20px;
+  background:linear-gradient(180deg, rgba(203,184,146,.06), var(--glass));
+  border-color:rgba(203,184,146,.22);
+}
+.intro-head{ display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.intro-head .avatar{
+  width:44px; height:44px; font-size:16px;
+  background:rgba(203,184,146,.12); border-color:rgba(203,184,146,.3); color:var(--gold);
+}
+.intro-name{ font-size:15px; font-weight:600; display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+.intro-meta{ font-size:12px; color:var(--faint); margin-top:2px; letter-spacing:.03em; }
+.intro-body{ color:var(--muted); font-size:15px; line-height:1.7; }
+.intro-body strong{ color:var(--text); }
+
+/* ==========================================================================
+   FEED GATE — blur + lock the feed for signed-out visitors
+   ========================================================================== */
+.feed-gate{ position:relative; }
+.gate-veil{ display:none; }
+.feed-gate.locked .feed{
+  filter:blur(7px);
+  pointer-events:none;
+  user-select:none;
+  max-height:620px; overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom, #000 55%, transparent 100%);
+  mask-image:linear-gradient(to bottom, #000 55%, transparent 100%);
+}
+.feed-gate.locked .gate-veil{
+  display:flex; position:absolute; inset:0;
+  align-items:flex-start; justify-content:center;
+  padding-top:90px; z-index:3;
+}
+.gate-card{
+  text-align:center; max-width:360px; padding:30px 26px;
+  background:linear-gradient(180deg, var(--surface-2), var(--surface));
+  border-color:var(--border-lit); box-shadow:var(--shadow-lift);
+}
+.gate-star{ display:block; width:34px; height:34px; margin:0 auto 14px; color:var(--gold); }
+.gate-star svg{ width:100%; height:100%; filter:drop-shadow(0 0 8px rgba(203,184,146,.5)); }
+.gate-card h3{ font-family:var(--font-display); font-weight:400; font-size:21px; letter-spacing:.02em; margin-bottom:8px; }
+.gate-card p{ font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:18px; }
+
 /* Modal */
 .modal-back{
   position:fixed; inset:0; z-index:100;
@@ -328,6 +374,18 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
     <p class="reveal">A private communication layer for ideas, investments, ventures, and long-term opportunity.</p>
   </header>
 
+  <!-- Founder introduction — always visible, the invitation to the room -->
+  <div class="g intro reveal" id="intro">
+    <div class="intro-head">
+      <span class="avatar" aria-hidden="true">GM</span>
+      <div>
+        <div class="intro-name">Georlennys Martinez <span class="role founder">Founder</span></div>
+        <div class="intro-meta">A note to the community</div>
+      </div>
+    </div>
+    <p class="intro-body">Opening The Exchange to the community. The bar here is simple: <strong>ideas worth the room&rsquo;s time.</strong> If you&rsquo;ve spotted an opportunity, a market shift, or a way any Northspire product could be better &mdash; this is where it belongs. Create an account to read the discussion and add your voice.</p>
+  </div>
+
   <div class="exchange">
 
     <!-- ============ MAIN COLUMN: composer + feed ============ -->
@@ -359,7 +417,19 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
         </div>
       </div>
 
-      <div class="feed" id="feed"></div>
+      <div class="feed-gate" id="feed-gate">
+        <div class="feed" id="feed"></div>
+        <div class="gate-veil" id="gate-veil">
+          <div class="gate-card g">
+            <span class="gate-star" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="currentColor"><path d="M24 2 L27.5 20.5 L46 24 L27.5 27.5 L24 46 L20.5 27.5 L2 24 L20.5 20.5 Z"/></svg>
+            </span>
+            <h3>A private room</h3>
+            <p>The Exchange is members only. Create a free account to read the discussion, share ideas, and see what the community is tracking.</p>
+            <button class="btn-auth" id="gate-signin">Create an account · Sign in</button>
+          </div>
+        </div>
+      </div>
 
     </div>
 
@@ -447,16 +517,14 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
         service_role key here — only the anon (public) key.
    Until keys are added, the page runs in read-only demo mode with seed posts.
    ========================================================================== */
-const SUPABASE_URL  = '';   // <-- paste your Project URL here
-const SUPABASE_ANON = '';   // <-- paste your anon (public) key here
+const SUPABASE_URL  = 'https://yvaalykflpljxmwicqkq.supabase.co';   // <-- paste your Project URL here
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2YWFseWtmbHBsanhtd2ljcWtxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3MTk2MDksImV4cCI6MjA5OTI5NTYwOX0.m37X0vjCoC28M2-1ROVIia2PB3TDsm7Vr0p2kt0P_yE';   // <-- paste your anon (public) key here
 
 const CATS = ['Investment Idea','Venture Idea','Market Observation','Product Feedback','Partnership Lead','General Discussion'];
 
-/* Demo seed shown when Supabase isn't configured yet (read-only). */
+/* Demo seed shown when Supabase isn't configured yet (read-only).
+   The founder welcome lives in the intro banner above, not here. */
 const SEED = [
-  { id:'seed-1', display_name:'Georlennys Martinez', role:'Founder', created_at:daysAgo(2), category:'Venture Idea',
-    body:'Opening The Exchange to the community. The bar here is simple: ideas worth the room\u2019s time. If you\u2019ve spotted an opportunity, a market shift, or a way any Northspire product could be better \u2014 this is where it belongs.',
-    like_count:12, comment_count:1, _liked:false, _comments:[{display_name:'Member', body:'Great addition \u2014 been hoping for a place to discuss the collectibles side.'}] },
   { id:'seed-2', display_name:'Community Member', role:'Member', created_at:daysAgo(1), category:'Market Observation',
     body:'Graded card premiums for iconic modern cards keep proving resilient vs raw \u2014 the PSA 10 spread on top Evolving Skies cards barely moved during the pullback. Quality concentration seems to be the durable thesis.',
     like_count:8, comment_count:1, _liked:false, _comments:[{display_name:'Georlennys Martinez', body:'Agreed \u2014 the flight to quality shows up in every downturn. Blue-chips hold.'}] },
@@ -495,8 +563,10 @@ let mode = 'signup';  // auth modal mode (declared before boot uses it)
 function renderAuth(){
   const bar = document.getElementById('auth-bar');
   const composer = document.getElementById('composer');
+  const gate = document.getElementById('feed-gate');
   if(session && profile){
     composer.classList.remove('locked');
+    gate.classList.remove('locked');
     document.getElementById('composer-avatar').textContent = initials(profile.display_name);
     bar.innerHTML =
       '<span class="auth-user"><span class="avatar">'+initials(profile.display_name)+'</span>'+
@@ -505,6 +575,7 @@ function renderAuth(){
     document.getElementById('signout').onclick = async ()=>{ await sb.auth.signOut(); };
   } else {
     composer.classList.add('locked');
+    gate.classList.add('locked');
     bar.innerHTML = '<button class="btn-auth" id="signin">Sign in</button>';
     document.getElementById('signin').onclick = openModal;
   }
@@ -516,6 +587,8 @@ function wireModal(){
   document.getElementById('modal-close').onclick = closeModal;
   back.onclick = e=>{ if(e.target===back) closeModal(); };
   document.getElementById('veil-signin').onclick = openModal;
+  const gs = document.getElementById('gate-signin');
+  if(gs) gs.onclick = openModal;
   document.getElementById('toggle-btn').onclick = ()=>{ mode = mode==='signup'?'signin':'signup'; syncModal(); };
   document.getElementById('auth-submit').onclick = submitAuth;
   if(!CONFIGURED) document.getElementById('config-warn').style.display='block';
