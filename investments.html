@@ -107,6 +107,8 @@ a{ color:inherit; text-decoration:none; }
 .pos-cat.has-logo{ background:rgba(255,255,255,.035); border-color:rgba(255,255,255,.09); padding:0; }
 .asset-logo{ width:22px; height:22px; display:block; overflow:visible; }
 .asset-logo.eth{ width:15px; height:24px; color:#e6ecf2; }
+.asset-logo.ball{ width:24px; height:24px; }
+.pos-cat:has(.ball){ background:rgba(245,132,38,.07); border-color:rgba(245,132,38,.25); }
 .pos-id{ flex:1; min-width:0; }
 .pos-id h3{ font-family:var(--font-display); font-weight:400; font-size:19px; letter-spacing:.02em; }
 .pos-id .sub{ font-size:12.5px; color:var(--faint); margin-top:2px; letter-spacing:.04em; }
@@ -297,45 +299,6 @@ a{ color:inherit; text-decoration:none; }
 .receipt strong{ color:var(--text); font-weight:600; }
 .receipt-dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px rgba(163,196,220,.6); flex:none; }
 
-/* ==========================================================================
-   LAUNDROMAT GOAL BAR
-   ========================================================================== */
-.goal-wrap{ margin-top:40px; }
-.goal-card{
-  background:linear-gradient(180deg, var(--surface-2), var(--surface));
-  border:1px solid var(--border-lit); border-radius:var(--radius);
-  padding:clamp(22px,4vw,32px); box-shadow:var(--shadow-lift); position:relative; overflow:hidden;
-}
-.goal-card::before{
-  content:""; position:absolute; top:-80px; right:-40px; width:280px; height:280px;
-  background:radial-gradient(closest-side, var(--glow), transparent 70%); pointer-events:none;
-}
-.goal-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; }
-.goal-eyebrow{ font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
-.goal-title{ font-family:var(--font-display); font-weight:400; font-size:clamp(22px,4vw,28px); letter-spacing:.02em; }
-.goal-sub{ color:var(--muted); font-size:13.5px; margin-top:4px; }
-.goal-pct{ font-family:var(--font-display); font-size:clamp(26px,5vw,36px); color:var(--accent); font-variant-numeric:tabular-nums; flex:none; }
-
-/* Track + fill */
-.goal-track{ position:relative; height:14px; border-radius:20px; background:var(--bg); border:1px solid var(--border); overflow:hidden; }
-.goal-fill{
-  height:100%; border-radius:20px;
-  background:linear-gradient(90deg, rgba(163,196,220,.55), var(--accent));
-  box-shadow:0 0 16px rgba(163,196,220,.4); transition:none;
-}
-.goal-mile{ position:absolute; top:0; bottom:0; width:1px; background:var(--border-lit); transform:translateX(-.5px); }
-.goal-mile:last-child{ background:transparent; }
-
-/* Figures row */
-.goal-figures{ display:flex; justify-content:space-between; gap:12px; margin-top:18px; }
-.goal-figures > div{ display:flex; flex-direction:column; gap:3px; }
-.goal-figures .gf-mid{ text-align:center; }
-.goal-figures .gf-end{ text-align:right; }
-.gf-k{ font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--faint); }
-.gf-v{ font-family:var(--font-display); font-size:clamp(17px,3vw,22px); font-variant-numeric:tabular-nums; letter-spacing:.02em; }
-.gf-v.up{ color:var(--up); }
-.goal-note{ color:var(--muted); font-size:13.5px; line-height:1.6; margin-top:20px; padding-top:18px; border-top:1px solid var(--border); }
-
 /* Disclaimer */
 .disclaimer{ margin-top:40px; padding:18px 20px; border:1px solid var(--border); border-radius:var(--radius); background:var(--glass); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
 .disclaimer p{ color:var(--faint); font-size:12.5px; line-height:1.6; }
@@ -391,9 +354,6 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
   <!-- Position cards -->
   <div class="positions" id="positions"></div>
 
-  <!-- The Laundromat goal — animated progress toward $1M -->
-  <div class="goal-wrap reveal" id="goal"></div>
-
   <div class="disclaimer reveal">
     <p id="disclaimer-text"></p>
   </div>
@@ -407,6 +367,7 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
 </div>
 
 <script>
+
 /* ==========================================================================
    NORTHSPIRE INVESTMENT HUB — Configuration
    --------------------------------------------------------------------------
@@ -443,6 +404,22 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
    under a new key and reference it from the position.
    ========================================================================== */
 const ASSET_LOGOS = {
+  /* Knicks collection — original basketball mark in team colors
+     (#F58426 orange / #1D428A blue). To use the official roundel instead,
+     save the logo file as cards/knicks-logo.png and replace this whole
+     string with: '<img class="asset-logo" src="cards/knicks-logo.png" alt="">' */
+  knicks:
+    '<svg class="asset-logo ball" viewBox="0 0 64 64" role="img" aria-label="New York Knicks collection">' +
+      '<defs><radialGradient id="nykBall" cx=".35" cy=".3" r=".95">' +
+        '<stop offset="0" stop-color="#ff9c4a"/><stop offset=".65" stop-color="#f58426"/><stop offset="1" stop-color="#d96a12"/>' +
+      '</radialGradient></defs>' +
+      '<circle cx="32" cy="32" r="29" fill="url(#nykBall)" stroke="#1d428a" stroke-width="3"/>' +
+      '<g fill="none" stroke="#1d428a" stroke-width="3" stroke-linecap="round">' +
+        '<path d="M32 3v58M3 32h58"/>' +
+        '<path d="M11.5 11.5C21 21 21 43 11.5 52.5M52.5 11.5C43 21 43 43 52.5 52.5"/>' +
+      '</g>' +
+    '</svg>',
+
   /* Solana — official mark, brand gradient (#00FFA3 -> #DC1FFF) */
   solana:
     '<svg class="asset-logo" viewBox="0 0 397.7 311.7" role="img" aria-label="Solana">' +
@@ -473,8 +450,7 @@ const CATEGORIES = {
   ai:      { label: 'AI',          icon: '\u2726' },
   pokemon: { label: 'Pok\u00E9mon',icon: '\u25C6' },
   sports:  { label: 'Sports',      icon: '\uD83C\uDFC0' },
-  yugioh:  { label: 'Yu-Gi-Oh!',   icon: '\u2B22' },
-  other:   { label: 'Power Plays', icon: '\u2699' }
+  yugioh:  { label: 'Yu-Gi-Oh!',   icon: '\u2B22' }
 };
 
 /* ---- YOUR MOVES. Fill purchasePrice with what YOU actually paid.
@@ -522,7 +498,7 @@ const POSITIONS = [
     note:'The most iconic modern Pok\u00E9mon chase card. It held its value through the market crash better than almost anything else \u2014 a blue-chip collectible and a long-term hold. Tracked live in MyTCG Ledger.'
   },
   {
-    category:'sports', asset:'Knicks Graded Collection', sub:'Brunson, Towns, Bridges, Hart, Anunoby, Robinson & more',
+    category:'sports', asset:'Knicks Graded Collection', sub:'Brunson, Towns, Bridges, Hart, Anunoby, Robinson & more', logo:'knicks',
     gallery:true,
     action:'buy', status:'open',
     purchaseDate:'2026-07-07',
@@ -533,15 +509,6 @@ const POSITIONS = [
   }
 ];
 
-/* ---- THE LAUNDROMAT GOAL \u2014 the animated progress bar toward $1M.
-        Update `saved` as you set capital aside; the bar animates on load. ---- */
-const GOAL = {
-  title:'The Laundromat',
-  subtitle:'Saving toward a first cash-flowing business',
-  saved: 42000,          // <- how much you have saved so far (EDIT THIS)
-  target: 1000000,       // <- the goal
-  note:'A real, boring, cash-flowing business \u2014 the kind that quietly funds everything else. Every dollar set aside is a step toward owning it outright.'
-};
 
 /* ---- THE ASK — the button on every card. Instead of publishing a price
         target, invite the room to call it. Links into The Exchange with the
@@ -597,9 +564,6 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
   /* Cards */
   posEl.innerHTML = POSITIONS.map(card).join('') || '<div class="empty">No positions logged yet.</div>';
 
-  /* Laundromat goal bar */
-  renderGoal();
-
   /* Filter behaviour */
   filtEl.addEventListener('click', e=>{
     const btn = e.target.closest('.filter'); if(!btn) return;
@@ -620,7 +584,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
   });
 
   function card(p){
-    const c = CATEGORIES[p.category] || CATEGORIES.other;
+    const c = CATEGORIES[p.category] || { label:'Other', icon:'\u25C7' };
     const mark = (p.logo && ASSET_LOGOS[p.logo]) ? ASSET_LOGOS[p.logo] : c.icon;
     const markCls = (p.logo && ASSET_LOGOS[p.logo]) ? ' has-logo' : '';
     const g = gain(p);
@@ -694,67 +658,7 @@ const DISCLAIMER = 'This is a personal log of my own positions, shared for trans
     '</article>';
   }
 
-  /* ---- Laundromat goal: animated progress bar toward the target ---- */
-  function renderGoal(){
-    const el = document.getElementById('goal');
-    if(!el || typeof GOAL==='undefined') return;
-    const pct = Math.max(0, Math.min(100, (GOAL.saved/GOAL.target)*100));
-    const milestones = [25,50,75,100];
-    el.innerHTML =
-      '<div class="goal-card">'+
-        '<div class="goal-head">'+
-          '<div>'+
-            '<div class="goal-eyebrow">Power Play \u00B7 In Progress</div>'+
-            '<h3 class="goal-title">'+esc(GOAL.title)+'</h3>'+
-            '<p class="goal-sub">'+esc(GOAL.subtitle)+'</p>'+
-          '</div>'+
-          '<div class="goal-pct" id="goal-pct">0%</div>'+
-        '</div>'+
-        '<div class="goal-track">'+
-          '<div class="goal-fill" id="goal-fill" style="width:0%"></div>'+
-          milestones.map(m=>'<span class="goal-mile" style="left:'+m+'%"></span>').join('')+
-        '</div>'+
-        '<div class="goal-figures">'+
-          '<div><span class="gf-k">Saved</span><span class="gf-v up" id="goal-saved">$0</span></div>'+
-          '<div class="gf-mid"><span class="gf-k">Remaining</span><span class="gf-v" id="goal-remaining">$0</span></div>'+
-          '<div class="gf-end"><span class="gf-k">Goal</span><span class="gf-v">'+fmtMoney(GOAL.target)+'</span></div>'+
-        '</div>'+
-        (GOAL.note?'<p class="goal-note">'+esc(GOAL.note)+'</p>':'')+
-      '</div>';
-
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const fill=document.getElementById('goal-fill');
-    const pctEl=document.getElementById('goal-pct');
-    const savedEl=document.getElementById('goal-saved');
-    const remEl=document.getElementById('goal-remaining');
-
-    function paint(p){
-      const saved = GOAL.target*(p/100);
-      pctEl.textContent = (Math.round(p*10)/10)+'%';
-      savedEl.textContent = fmtMoney(saved);
-      remEl.textContent = fmtMoney(Math.max(0, GOAL.target-saved));
-    }
-
-    if(reduced){ fill.style.width=pct+'%'; paint(pct); return; }
-
-    // Animate the fill + count-up once the card scrolls into view
-    const start = ()=>{
-      const dur=1400, t0=performance.now();
-      requestAnimationFrame(function step(now){
-        const k=Math.min(1,(now-t0)/dur);
-        const eased=1-Math.pow(1-k,3); // easeOutCubic
-        fill.style.width=(pct*eased)+'%';
-        paint(pct*eased);
-        if(k<1) requestAnimationFrame(step);
-      });
-    };
-    if('IntersectionObserver' in window){
-      const go=new IntersectionObserver((es)=>es.forEach(x=>{ if(x.isIntersecting){ start(); go.disconnect(); }}),{threshold:.35});
-      go.observe(el);
-    } else start();
-  }
-
-  function fmtMoney(n){
+function fmtMoney(n){
     n=Math.round(n);
     if(n>=1000000) return '$'+(n/1000000).toFixed(n%1000000===0?0:2)+'M';
     return '$'+n.toLocaleString('en-US');
