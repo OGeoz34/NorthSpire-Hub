@@ -104,7 +104,7 @@ section{ margin-top:120px; }
   font-size:clamp(26px,5.4vw,38px); letter-spacing:.02em;
   line-height:1.2; margin-bottom:22px;
 }
-.lead{ color:var(--muted); font-size:clamp(16px,2.4vw,18px); max-width:64ch; }
+.lead{ color:var(--muted); font-size:clamp(16px,2.4vw,18px); max-width:56ch; line-height:1.72; }
 .lead + .lead{ margin-top:18px; }
 
 /* Scroll reveal — elements rise in as they enter the viewport */
@@ -174,8 +174,8 @@ section{ margin-top:120px; }
 /* ==========================================================================
    SECTION 2 — STORY  (prose column)
    ========================================================================== */
-.prose p{ color:var(--muted); font-size:clamp(16px,2.3vw,18px); max-width:64ch; }
-.prose p + p{ margin-top:22px; }
+.prose p{ color:var(--muted); font-size:clamp(16px,2.3vw,18px); max-width:54ch; line-height:1.75; }
+.prose p + p{ margin-top:26px; }
 .prose .pull{
   font-family:var(--font-display); color:var(--text);
   font-size:clamp(20px,3.6vw,26px); line-height:1.4;
@@ -482,21 +482,6 @@ section{ margin-top:120px; }
 }
 
 /* ==========================================================================
-   SECTION 7 — CORE VALUES  (icon cards)
-   ========================================================================== */
-.values{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:26px; }
-.value{
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
-  padding:20px 18px; text-align:left;
-  transition:transform .3s cubic-bezier(.2,.8,.2,1), border-color .3s ease, background .3s ease;
-}
-.value:hover{ transform:translateY(-2px); border-color:var(--border-lit); background:var(--surface-2); }
-.value .ic{ width:26px; height:26px; color:var(--accent); margin-bottom:12px; }
-.value .ic svg{ width:100%; height:100%; }
-.value h4{ font-family:var(--font-display); font-weight:400; font-size:16.5px; letter-spacing:.02em; }
-.value p{ color:var(--muted); font-size:13px; margin-top:5px; }
-
-/* ==========================================================================
    SECTION 8 — LETTER
    ========================================================================== */
 .letter{ margin-top:34px; }
@@ -579,7 +564,7 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
     <p class="role reveal">Founder, CEO &amp; Creative Director · Northspire Ventures</p>
     <p class="creds reveal">Registered Nurse (RN) &nbsp;•&nbsp; Emergency Medical Technician (EMT)</p>
     <p class="headline reveal">Building businesses designed to <em>outlast their founders.</em></p>
-    <p class="mission reveal">A lifelong student who became a builder. The companies are chapters; the throughline is a belief that curiosity, practiced long enough, becomes craftsmanship.</p>
+    <p class="mission reveal">Registered Nurse turned founder. Northspire Ventures is the holding company behind Geo Lenz Studio, Astral Collectionz, and MyTCG Ledger — businesses in different industries, held to one standard.</p>
     <span class="scrollcue reveal">
       <span>The Vision</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
@@ -591,17 +576,15 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
        ==================================================================== -->
   <section class="story">
     <p class="eyebrow reveal">Why Northspire Exists</p>
-    <h2 class="section-title reveal">Everything I build comes from the same place.</h2>
+    <h2 class="section-title reveal">A holding company, not a portfolio.</h2>
     <div class="prose">
-      <p class="reveal">Photography. Healthcare. Software. Collectibles. Investing. On the surface they look like different worlds. To me they have always been one — different expressions of the same curiosity, each teaching a lesson the others couldn't.</p>
-      <p class="pull reveal">Healthcare taught responsibility. Photography taught observation. Collecting taught patience. Software taught problem-solving. Investing taught me to think in decades.</p>
-      <p class="reveal">My path started on the pre-med track at the University at Albany. I thought I already knew where my life was headed. I was wrong — and learning that early turned out to be a gift. Before I became a Registered Nurse, I worked as an EMT, a phlebotomist, and an EKG technician. Those years taught me discipline and what it means to earn someone's trust when they are at their most vulnerable.</p>
-      <p class="reveal">A second education was happening away from work. I fell in love with ideas — business, psychology, leadership, philosophy, communication, technology, history. One book became ten, ten became fifty. The more I read, the clearer one truth became: knowledge is worth little until it leaves the page.</p>
-      <p class="pull reveal">So I stopped asking what I should do, and started asking what I should build.</p>
-      <p class="reveal">Photography became Geo Lenz Studio. A love of collecting became Astral Collectionz. A problem I kept running into as a collector became MyTCG Ledger. None of them were random. Each one answered a problem I had lived through myself — and each was built to solve it well, not quickly.</p>
-      <p class="reveal">In time I saw the larger pattern. I wasn't building separate companies at all. I was building one philosophy, and Northspire is its name: a place where curiosity becomes craftsmanship, where learning becomes action, and where every company earns its place by solving a real problem and being built to last.</p>
-      <p class="pull reveal">I have never chased success the way I chase mastery. I don't ask what's easiest. I ask what's best — and why, and how it truly works. Excellent things tend to follow from that question.</p>
-      <p class="reveal">Northspire is still young. Most of what I hope to build doesn't exist yet, and that is the part that excites me most. You aren't seeing the finished story. You're watching the foundation being laid.</p>
+      <p class="reveal">People assume a photography studio, a collectibles business, and a piece of software have nothing to do with each other. That assumption is the whole reason Northspire exists.</p>
+      <p class="reveal">A portfolio is a list. Things sit next to each other and share an owner. A holding company is different: each business is supposed to make the others better. That is the standard I hold everything to here.</p>
+      <p class="pull reveal">Photography improves branding. Software improves operations. Collectibles teach markets. Healthcare teaches responsibility. Investing teaches capital allocation.</p>
+      <p class="reveal">Those aren't slogans, they're the actual mechanics. The images I shoot at Geo Lenz Studio are why Astral Collectionz looks like a brand instead of a storefront. Selling graded cards taught me what buyers really price — which is exactly what MyTCG Ledger had to get right to be worth using. Nursing set the bar for what I consider an acceptable mistake. And every dollar I've had to allocate has made me slower and more deliberate about the next one.</p>
+      <p class="reveal">Run a business alone and you learn one industry. Run several with the same hands and you start noticing what carries across — pricing, trust, patience, how people actually decide. Northspire is the structure that lets those lessons compound instead of stranding them in one company.</p>
+      <p class="pull reveal">Every venture strengthens the others. That is the point.</p>
+      <p class="reveal">Most of what I intend to build doesn't exist yet. Northspire is early, deliberately so. What is already settled is the bar every company has to clear first.</p>
     </div>
   </section>
 
@@ -609,18 +592,18 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
        SECTION 3 — LEADERSHIP & HEALTHCARE
        ==================================================================== -->
   <section class="leadership">
-    <p class="eyebrow reveal">Leadership</p>
-    <h2 class="section-title reveal">What healthcare taught me about building</h2>
-    <p class="lead reveal">Before Northspire, the work was in emergency rooms and ambulances — as a Registered Nurse in the State of New York and a certified Emergency Medical Technician. That work was never separate from how I lead today. It is the foundation of it.</p>
+    <p class="eyebrow reveal">The Standard</p>
+    <h2 class="section-title reveal">How I decide what’s worth building</h2>
+    <p class="lead reveal">I’ve passed on more ideas than I’ve started. Usually not because the idea was bad, but because it couldn’t clear this. I keep the list short and I wrote it down, because it’s easy to talk yourself into something when it only lives in your head.</p>
     <div class="glass reveal" style="margin-top:30px">
       <div class="principles">
-        <div class="principle"><span class="k">Calm under pressure</span><span class="v">In an emergency, panic helps no one. You learn to steady yourself first, then act. Every company decision is easier when composure comes before reaction.</span></div>
-        <div class="principle"><span class="k">Decisions with incomplete information</span><span class="v">You rarely have the full picture and still have to choose well. Building a business is the same — you move thoughtfully on what you know, and adjust as you learn more.</span></div>
-        <div class="principle"><span class="k">Precision &amp; detail</span><span class="v">In care, a small detail is the difference that matters. That same attention is why craftsmanship — not shortcuts — defines every Northspire product.</span></div>
-        <div class="principle"><span class="k">Accountability</span><span class="v">When you are responsible for someone's wellbeing, there is nowhere to hide from the outcome. I carry that ownership into everything Northspire ships.</span></div>
-        <div class="principle"><span class="k">Compassion &amp; service</span><span class="v">Healthcare is service at its most human. Business should be too — companies exist to make people's lives genuinely better, not just to extract from them.</span></div>
-        <div class="principle"><span class="k">Discipline &amp; continuous learning</span><span class="v">Medicine never lets you stop learning. Neither does building. The discipline to keep improving is the engine behind long-term thinking.</span></div>
-        <div class="principle"><span class="k">Trust, earned through action</span><span class="v">Patients trust what you do, not what you say. Northspire is built the same way — trust is earned quietly, through the work, over time.</span></div>
+        <div class="principle"><span class="k">It solves a problem I have had</span><span class="v">Not a problem I imagined a market might have. Something I ran into personally, often enough to get tired of it. Invented demand is the most expensive mistake available.</span></div>
+        <div class="principle"><span class="k">I would pay full price for it</span><span class="v">If I would only use it because I made it, it isn’t finished. The bar is whether I’d hand over my own money as a stranger.</span></div>
+        <div class="principle"><span class="k">The description matches the thing</span><span class="v">A card is the grade I said it was. A product does what the page claims. This sounds obvious until you notice how much of the market runs on the gap between the two.</span></div>
+        <div class="principle"><span class="k">It works before it grows</span><span class="v">Attention is not a fix. Anything scaled early just distributes its flaws faster and to more people.</span></div>
+        <div class="principle"><span class="k">My name is on it</span><span class="v">If someone has a bad experience, one person is responsible for fixing it — usually me. The moment that gets spread across a team, nobody owns it.</span></div>
+        <div class="principle"><span class="k">It runs without me</span><span class="v">If it only works while I’m watching, I didn’t build a business, I built myself a job. The goal is to not be needed day to day.</span></div>
+        <div class="principle"><span class="k">It still makes sense in ten years</span><span class="v">Trends are a reason to move quickly, not a reason to exist. If the whole thesis evaporates when the moment passes, it was never a company.</span></div>
       </div>
     </div>
   </section>
@@ -663,14 +646,6 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
     <div class="chapters reveal" id="chapters"></div>
   </section>
 
-  <!-- ====================================================================
-       SECTION 7 — CORE VALUES
-       ==================================================================== -->
-  <section class="values-sec">
-    <p class="eyebrow reveal">Core Values</p>
-    <h2 class="section-title reveal">What Northspire stands for</h2>
-    <div class="values" id="values"></div>
-  </section>
 
   <!-- ====================================================================
        SECTION 8 — LETTER FROM THE FOUNDER
@@ -722,16 +697,11 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
 
 /* --- Section 4: Philosophy tenets --- */
 const TENETS = [
-  ['Think Long Term',                  'Build for decades, not for the next launch. Time rewards patience.'],
-  ['Details Matter',                   'The small things are the whole thing. Nothing ships half-finished.'],
-  ['Own Everything',                   'Take full responsibility for the outcome — no excuses, no hiding.'],
-  ['Create More Than You Consume',     'Leave more value in the world than you take out of it.'],
-  ['Never Stop Learning',             'Curiosity is the engine. The day you stop learning, you start declining.'],
-  ['Build Before You Scale',           'Get it right, then grow it. Scale amplifies quality and flaws alike.'],
-  ['Serve With Integrity',             'Do right by people even when no one is watching. Especially then.'],
-  ['Leave It Better',                  'Every project, every interaction — leave it better than you found it.'],
-  ['Quality Over Quantity',            'One thing done exceptionally beats ten done adequately.'],
-  ['Craftsmanship Wins',               'In the long run, care is the only durable advantage.']
+  ['Time Is the Only Real Test',        'Anything can look good on launch day. Only years reveal whether it was made well.'],
+  ['The Small Thing Is the Whole Thing','People rarely walk away over one large failure. They walk after the fifth small one.'],
+  ['No One Else Is Coming',             'If a problem irritates you twice, it has quietly become yours to solve.'],
+  ['Study What Doesn\u2019t Apply',          'The most useful idea usually arrives from a field with no obvious connection to yours.'],
+  ['Finish Things',                     'An unfinished good idea is worth less than a completed adequate one. Shipping is its own skill.']
 ];
 
 /* --- Section 5: Ecosystem companies (status: 'live' or 'building') --- */
@@ -746,99 +716,67 @@ const COMPANIES = [
 
 /* --- Section 6: The Journey — five chapters. [railLabel, chapterNo, title, [paragraphs...], quote] --- */
 const CHAPTERS = [
-  ['Searching', 'Chapter I', 'Finding My Path',
+  ['Before', 'Chapter I', 'Before Northspire',
     [
-      'If you look at Northspire today, it might seem like the story began with a company.',
-      'It didn\u2019t.',
-      'It began with a young man who thought he had his future figured out.',
-      'When I started on the pre-med track at the University at Albany, I believed I knew exactly where my life was headed. Like many people, I assumed success came from following a straight line.',
-      'But life has a way of challenging the plans we make for ourselves.',
-      'Instead of forcing myself down a path that no longer felt right, I chose something much harder: I gave myself permission to question it.',
-      'That decision led me into healthcare. I became an EMT, a phlebotomist, and an EKG technician before earning my nursing degree. Each role taught me something different \u2014 not just about medicine, but about responsibility, service, discipline, and the privilege of helping people during some of the most important moments of their lives.',
-      'Looking back, I realize I wasn\u2019t changing directions.\nI was collecting experiences that would shape the way I think, the way I lead, and eventually, the way I build.'
+      'I started my post-secondary education as a biology major on a pre-med track at the University at Albany.',
+      'Medical school was the plan. I don\u2019t think I ever really stopped to ask whether it was my plan, or just the one that made the most sense on paper.',
+      'It was a clear path, and that was the appeal. Every semester had its requirements. Every requirement had a next step. I knew exactly who I was supposed to be at the end of it.',
+      'What I couldn\u2019t answer was why I wanted it.',
+      'Being honest about that meant admitting I had picked the destination before I understood my own reasons for going \u2014 and sorting that out was going to cost me time I had planned on spending moving forward.',
+      'I took the time anyway.',
+      'I stayed in medicine. What changed is that I stopped treating the path as something already decided for me. Everything I\u2019ve built since traces back to that.'
     ],
     'Sometimes finding your path isn\u2019t about choosing one direction. It\u2019s about having the courage to keep moving until the right one reveals itself.'
   ],
-  ['Experience', 'Chapter II', 'Learning Through Experience',
+  ['Hospital', 'Chapter II', 'The Hospital Years',
     [
-      'For a while, I thought healthcare was simply the profession I had chosen.',
-      'Looking back, I realize it became something much greater.',
-      'It became the standard for how I approach everything else.',
-      'Working as an EMT, a phlebotomist, an EKG technician, and eventually as a Registered Nurse taught me that excellence isn\u2019t built through big moments.\nIt\u2019s built through thousands of small decisions that most people never notice.',
-      'Showing up prepared.\nPaying attention.\nTaking responsibility.\nRemaining calm when others can\u2019t.\nNever stopping your education.',
-      'Those lessons never stayed inside the hospital.\nThey followed me everywhere.',
-      'Into photography.\nInto software.\nInto business.\nInto every company I\u2019ve built.',
-      'Because whether someone trusts you with their health, their memories, their investments, or the software they rely on every day \u2014 the responsibility is the same.',
-      'If someone places their trust in you, they deserve your best.'
+      'Before I earned my Registered Nurse license in New York, I worked as an EMT, then as a phlebotomist, then as an EKG technician. Different jobs, but they all put me in front of people on one of the worst days of their life.',
+      'For a while I thought of healthcare as the profession I had chosen. Looking back, it was where I learned how to work.',
+      'The job doesn\u2019t leave much room for close enough. A number written down wrong, a step skipped because you were tired, a detail you assumed instead of checked \u2014 someone else pays for that, and usually right away. You learn to slow down where it matters and stay steady when the people around you can\u2019t.',
+      'That part I expected.',
+      'What I didn\u2019t expect was the question it left me with. At a bedside I could help one person completely, start to finish. But I kept thinking about everything standing behind that moment \u2014 the training, the protocols, the equipment. Somebody designed all of it, and their work reached thousands of people they would never meet.',
+      'I wasn\u2019t only interested in helping people one patient at a time. I wanted to build things that could help thousands.',
+      'That\u2019s what eventually pulled me toward entrepreneurship. Not away from taking care of people \u2014 toward doing it at a scale one pair of hands can\u2019t reach.'
     ],
     'The profession changed. The standard never did.'
   ],
-  ['Reading', 'Chapter III', 'Books Became My Second Education',
+  ['Reading', 'Chapter III', 'A Second Education',
     [
-      'Some people unwind by watching television.\nI found myself reaching for books.\nWhat started as curiosity slowly became a habit, and eventually, a way of life.',
-      'Outside of work, I spent countless hours reading and listening \u2014 business, psychology, leadership, philosophy, communication, investing, history, technology, and human behavior. I wasn\u2019t trying to collect information. I was trying to understand the world from the perspective of people who had spent decades mastering their craft.',
-      'Each author offered something different.',
-      'Jordan Peterson challenged me to take responsibility.\nRobert Greene taught me to study human nature.\nJames Clear showed me that small habits shape extraordinary outcomes.\nStephen Covey changed the way I thought about character and leadership.\nChris Voss taught me that communication is often more powerful than persuasion.\nPeter Thiel challenged conventional thinking.\nSeneca and Plato reminded me that many of the questions we struggle with today have been asked for thousands of years.',
-      'No single book changed my life.\nIt was the accumulation of ideas that did.',
-      'Over time, I arrived at a principle that now sits behind everything I build: knowledge isn\u2019t valuable because you possess it. It\u2019s valuable because you do something with it.',
-      'Reading taught me to think.\nBuilding taught me to apply what I learned.\nTogether, they became the foundation of Northspire.',
-      'Every book gave me knowledge. Building gave that knowledge a purpose.',
-      'I never believed wisdom belonged to one profession. Some of my greatest teachers were entrepreneurs; others were philosophers who lived thousands of years ago. Some built companies, some led nations, some simply learned to think more clearly. Each one offered a different piece of the same puzzle \u2014 and the more perspectives I explored, the more I saw that excellence leaves clues.',
-      'The principles that build a great business are often the same ones that build a meaningful life: discipline, patience, curiosity, integrity, and a commitment to continuous improvement.',
-      'That\u2019s why I never stopped reading.\nI wasn\u2019t looking for answers.\nI was learning how to ask better questions.'
+      'The hospital gave me the standard. Books gave me the range.',
+      'I read constantly and without a plan \u2014 Peterson, Greene, Clear, Covey, Voss, Thiel, Seneca, Plato. Psychology. Finance. History. Design. How brands are made and how people actually decide things.',
+      'Reading across unrelated fields does something a single field never will. You stop seeing separate subjects and start seeing the same handful of problems wearing different clothes.',
+      'A negotiation and a diagnosis are both the practice of asking better questions before committing.\nA balance sheet and a patient chart are both a story told in numbers by someone with an interest in how it reads.\nA brand and a bedside manner are both trust, built or destroyed in small increments.',
+      'That habit \u2014 pulling a principle out of one field and testing it in another \u2014 turned out to be the most useful thing I own. It\u2019s why I don\u2019t think a photography business and a software product are unrelated. To me they never were.',
+      'The one belief that survived all of it is simple: an idea that never leaves the page didn\u2019t change anything.'
     ],
     'I wasn\u2019t looking for answers. I was learning how to ask better questions.'
   ],
-  ['Building', 'Chapter IV', 'Building Instead of Waiting',
+  ['Companies', 'Chapter IV', 'Why These Companies',
     [
-      'There came a point where learning alone wasn\u2019t enough.',
-      'For years, I had filled notebooks with ideas, highlighted pages in books, and studied the people who built things that stood the test of time. But eventually I realized something that changed how I looked at knowledge.',
-      'Ideas are only valuable when they become reality.',
-      'So I stopped asking, \u201cWhat should I learn next?\u201d\nAnd started asking, \u201cWhat can I build?\u201d',
-      'The first answer was photography.\nGeo Lenz Studio became a way to preserve moments that people would remember for the rest of their lives.',
-      'Then came Astral Collectionz.\nWhat started as a personal passion for collecting grew into a business built on patience, authenticity, and a long-term view of value \u2014 the kind of company I would trust as a collector myself.',
-      'Then came MyTCG Ledger.\nAfter years of collecting, I became frustrated by the lack of tools that truly understood collectors. Instead of waiting for someone else to solve the problem, I built the platform I wished existed.',
-      'Looking back, I wasn\u2019t building random businesses.\nI was building solutions to problems I genuinely cared about.',
-      'Each company serves a different purpose.\nEach solves a different problem.\nBut they\u2019re all guided by the same philosophy:',
-      'Build something useful.\nObsess over the details.\nKeep improving.\nEarn trust through the quality of your work.\nNever stop building.'
+      'None of these started as a business plan. Each one started as something I couldn\u2019t stop noticing.',
+      '<strong>Geo Lenz Studio.</strong> A photograph is an argument about what deserved to be kept. I wanted to make images people would still want decades from now, which is a harder brief than making images people like today.',
+      '<strong>Astral Collectionz.</strong> Collecting taught me what markets actually reward \u2014 patience, authenticity, and the discipline to hold. I wanted to run the kind of operation I\u2019d want to buy from as a collector: honest grading, honest descriptions, no hype.',
+      '<strong>MyTCG Ledger.</strong> This one began as frustration. I owned a collection and there was no tool that understood how collectors actually think about it \u2014 cost basis, condition, why you bought it, what it\u2019s worth now. I got tired of waiting for someone to build it correctly.',
+      'Three industries. One question underneath all of them: why isn\u2019t there a better way to do this?',
+      'I don\u2019t start companies to own more companies. I start them when I\u2019ve personally hit a problem and I can see what the honest solution looks like.'
     ],
     'The goal was never to build more companies. The goal was to build better ones.'
   ],
-  ['Northspire', 'Chapter V', 'Northspire',
+  ['Northspire', 'Chapter V', 'What Northspire Is',
     [
-      'When people look at Northspire, they see a collection of businesses.',
-      'I see something very different.',
-      'I see every lesson I\u2019ve learned, every risk I\u2019ve taken, every book I\u2019ve read, every person who\u2019s influenced me, and every experience that\u2019s shaped the way I think \u2014 all connected by one purpose.',
-      'For a long time, I believed I was building separate things.',
-      'A photography studio.\nA collectibles company.\nSoftware for collectors.\nFuture ideas waiting for the right moment.',
-      'Eventually I realized none of them were separate.\nThey were all expressions of the same philosophy.',
-      'A belief that the best things in life are built with patience.\nThat trust is earned through consistency.\nThat learning should never stop.\nAnd that if you\u2019re fortunate enough to create something meaningful, you have a responsibility to leave it better than you found it.',
-      'Northspire became the home for that philosophy.\nNot because I wanted another business.\nBecause I wanted a place where every future idea could grow from the same foundation.',
-      'I\u2019m not trying to build the biggest company.\nI\u2019m trying to build companies that people can trust.\nCompanies that solve real problems.\nCompanies that are still creating value decades from now.',
-      'Northspire is still young.\nMost of what I dream about hasn\u2019t been built yet.',
-      'There will be successes.\nThere will be failures.\nThere will be ideas that never leave the drawing board and others that grow beyond anything I imagined.',
-      'That\u2019s part of the journey.',
-      'What won\u2019t change is the reason I started.\nTo keep learning.\nTo keep building.\nAnd to spend my life creating things that are genuinely useful to other people.',
-      'If you\u2019re reading this today, you\u2019re seeing Northspire at the very beginning. I hope that years from now you\u2019ll be able to come back, look at how far we\u2019ve come, and know you were here when the foundation was still being laid.',
-      'Thank you for taking the time to understand the vision.\nWelcome to the journey.'
+      'Northspire is the name I gave the standard.',
+      'It\u2019s a long-term holding company, and I mean long-term literally \u2014 I\u2019m not optimizing for a quarter, an exit, or a trend cycle. The measure I care about is whether these companies are still creating value for the people who rely on them in twenty years.',
+      'Which means the question I ask before anything carries this name isn\u2019t \u201cwill this grow fast?\u201d\nIt\u2019s \u201cwould I be comfortable if this outlasted me?\u201d',
+      'Those produce very different companies.',
+      'Right now Northspire is early. There will be things that work, things that don\u2019t, and ideas that never leave the drawing board. I\u2019d rather you see it at this stage than be handed a polished version later \u2014 the foundation is where you can tell what something is actually made of.',
+      'If it holds, I\u2019d want it remembered for one thing: people trusted what we made.'
     ],
     'Northspire isn\u2019t the destination. It\u2019s the commitment to keep building.'
   ]
 ];
 
 /* --- Section 7: Core values --- */
-const VALUES = [
-  ['Integrity',            'Do right, always.',                'M12 3l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V6z'],
-  ['Innovation',           'Build what should exist.',         'M9 18h6M10 21h4M12 3a6 6 0 0 1 4 10c-1 1-1 2-1 3H9c0-1 0-2-1-3a6 6 0 0 1 4-10z'],
-  ['Craftsmanship',        'Care is the advantage.',           'M14 7l3 3-8 8-3-3zM17 10l3-3-3-3-3 3'],
-  ['Discipline',           'Consistency compounds.',           'M12 3v18M5 8l7-5 7 5M5 8v8l7 5 7-5V8'],
-  ['Service',              'Make lives better.',               'M12 21s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10z'],
-  ['Long-Term Thinking',   'Decades, not moments.',            'M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'],
-  ['Excellence',           'The high standard, held.',         'M12 3l2.5 6H21l-5 4 2 7-6-4-6 4 2-7-5-4h6.5z'],
-  ['Curiosity',            'Keep asking, keep learning.',      'M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7M12 17v.1M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'],
-  ['Responsibility',       'Own the outcome.',                 'M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z'],
-  ['Continuous Learning',  'The work is never finished.',      'M4 7l8-4 8 4-8 4zM4 7v6l8 4 8-4V7M9 15v3l3 1.5 3-1.5v-3']
-];
+
 
 (function build(){
   /* Philosophy */
@@ -887,7 +825,7 @@ const VALUES = [
     // Chapter card
     const card = document.createElement('article');
     card.className = 'chapter';
-    const bodyHTML = c[3].map(p => '<p>'+ esc(p).replace(/\n/g,'<span class="br"></span>') +'</p>').join('') +
+    const bodyHTML = c[3].map(p => '<p>'+ esc(p).replace(/\n/g,'<span class="br"></span>').replace(/&lt;(\/?strong)&gt;/g,'<$1>') +'</p>').join('') +
                      (c[4] ? '<p class="quote">'+ esc(c[4]) +'</p>' : '');
     card.innerHTML =
       '<button class="chapter-head" aria-expanded="false">'+
@@ -922,15 +860,6 @@ const VALUES = [
   // Open the first chapter by default so the section isn't a row of closed bars
   setOpen(0);
 
-  /* Values */
-  const v = document.getElementById('values');
-  VALUES.forEach(x=>{
-    const el = document.createElement('div');
-    el.className = 'value reveal';
-    el.innerHTML = '<div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="'+ x[2] +'"/></svg></div>'+
-      '<h4>'+ esc(x[0]) +'</h4><p>'+ esc(x[1]) +'</p>';
-    v.appendChild(el);
-  });
 
   document.getElementById('year').textContent = '© ' + new Date().getFullYear() + ' · Building companies that endure';
 
