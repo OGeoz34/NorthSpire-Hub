@@ -413,7 +413,7 @@ footer .fm{ width:14px; height:14px; margin:0 auto 14px; color:var(--accent); op
             Post to the Exchange
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </button>
-          <span class="hint">Posts are saved in your browser for this preview. Thoughtful contributions only — see the Contribution Standard.</span>
+          <span class="hint">Your post is visible to every member of the Exchange. Thoughtful contributions only — see the Contribution Standard.</span>
         </div>
       </div>
 
@@ -536,8 +536,12 @@ function daysAgo(n){ return new Date(Date.now()-n*864e5).toISOString(); }
 function hoursAgo(n){ return new Date(Date.now()-n*36e5).toISOString(); }
 
 /* ---- Supabase client (or null in demo mode) ---- */
-const CONFIGURED = SUPABASE_URL && SUPABASE_ANON && window.supabase;
+const HAS_KEYS   = Boolean(SUPABASE_URL && SUPABASE_ANON);
+const CONFIGURED = HAS_KEYS && Boolean(window.supabase);
 const sb = CONFIGURED ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
+/* HAS_KEYS true but CONFIGURED false = the Supabase library failed to load
+   (offline / CDN blocked). That is an ERROR state, not demo mode — never
+   show seed posts there, because they'd look like real member activity. */
 
 let session = null;
 let profile = null;   // { display_name, role }
@@ -651,11 +655,15 @@ async function loadProfile(){
 const feedEl = document.getElementById('feed');
 
 async function fetchPosts(){
-  if(!sb) return SEED;
+  // Demo seeds ONLY when no keys are configured at all.
+  if(!sb) return HAS_KEYS ? [] : SEED;
   const { data:posts, error } = await sb.from('posts')
     .select('id, display_name, role, category, body, like_count, comment_count, created_at')
     .order('created_at', { ascending:false }).limit(50);
-  if(error || !posts) return SEED;
+  // Supabase is connected: show REAL posts only. An empty feed is honest;
+  // fake seed posts are not. Seeds are for demo mode (no backend) only.
+  if(error){ console.warn('Exchange: feed fetch failed', error.message); return []; }
+  if(!posts) return [];
   // fetch a preview of comments per post (up to 2)
   for(const p of posts){
     const { data:cs } = await sb.from('comments').select('display_name, body').eq('post_id', p.id).order('created_at').limit(2);
@@ -671,9 +679,22 @@ async function fetchPosts(){
 async function renderFeed(){
   const posts = await fetchPosts();
   window._posts = posts;
-  feedEl.innerHTML = posts.map(postHTML).join('') || '<div class="g post" style="text-align:center;color:var(--faint)">No posts yet. Be the first.</div>';
+  feedEl.innerHTML = posts.map(postHTML).join('') || emptyFeedHTML();
   renderSignals(posts);
   revealAll();
+}
+
+function emptyFeedHTML(){
+  return '<div class="g post" style="text-align:center;padding:44px 26px">'+
+    '<div style="width:30px;height:30px;margin:0 auto 16px;color:var(--gold)">'+
+      '<svg viewBox="0 0 48 48" fill="currentColor" style="width:100%;height:100%;opacity:.7"><path d="M24 2 L27.5 20.5 L46 24 L27.5 27.5 L24 46 L20.5 27.5 L2 24 L20.5 20.5 Z"/></svg>'+
+    '</div>'+
+    '<h3 style="font-family:var(--font-display);font-weight:400;font-size:20px;letter-spacing:.02em;margin-bottom:8px">The room is quiet</h3>'+
+    '<p style="color:var(--muted);font-size:14px;line-height:1.6;max-width:38ch;margin:0 auto">'+
+      (session
+        ? 'Nothing has been posted yet. Start the conversation \u2014 an idea, an observation, something worth the room\u2019s time.'
+        : 'No discussion here yet. Sign in to post the first idea and start the conversation.')+
+    '</p></div>';
 }
 
 function postHTML(p){
@@ -805,48 +826,6 @@ function revealAll(){
 }
 
 /* Starfield — same engine as every Northspire page */
-/* ==========================================================================
-   ASK PREFILL — arriving from the Investment Hub via a card's ask button:
-   exchange.html?ask=SOL&at=$81.00&cat=Investment%20Idea
-   Pre-writes the question in the composer, selects the category, and scrolls
-   to it. Works whether or not the visitor is signed in — if they're gated,
-   the draft is waiting for them the moment they sign in.
-   ========================================================================== */
-(function askPrefill(){
-  const q = new URLSearchParams(location.search);
-  const asset = (q.get('ask') || '').trim();
-  if(!asset) return;
-
-  const at  = (q.get('at')  || '').trim();
-  const cat = (q.get('cat') || '').trim();
-
-  const ta  = document.getElementById('composer-text');
-  const sel = document.getElementById('composer-cat');
-  if(!ta) return;
-
-  /* Don't clobber something the visitor already typed */
-  if(!ta.value.trim()){
-    ta.value = at
-      ? asset + ' is at ' + at + ' right now. Where do you think it lands \u2014 and by when?'
-      : 'Where do you think ' + asset + ' lands \u2014 and by when?';
-  }
-
-  if(sel && cat && CATS.includes(cat)) sel.value = cat;
-
-  /* Clean the URL so a refresh doesn't overwrite an edited draft */
-  history.replaceState(null, '', location.pathname);
-
-  const composer = document.getElementById('composer');
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  (composer || ta).scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
-
-  /* Only focus if they can actually type (composer isn't locked) */
-  if(composer && !composer.classList.contains('locked')){
-    ta.focus();
-    ta.setSelectionRange(ta.value.length, ta.value.length);
-  }
-})();
-
 (function starfield(){
   const canvas=document.getElementById('sky'); if(!canvas) return;
   const ctx=canvas.getContext('2d'); const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
