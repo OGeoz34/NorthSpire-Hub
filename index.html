@@ -611,7 +611,10 @@ const HUB = {
           title: 'Astral Collectionz',
           desc: 'Curated Pokémon cards and collectibles, sourced and graded.',
           href: 'https://www.ebay.com/usr/gmxz34',
-          preview: true,
+          /* eBay blocks automated screenshot bots, so the mShots service only
+             ever captures an error page (and caches it). We host our own
+             image instead — it can't break, expire, or be blocked. */
+          previewImage: 'astral-preview.jpg',
           actions: [
             { icon: 'cart',      title: 'Shop the eBay store', href: 'https://www.ebay.com/usr/gmxz34' },
             { icon: 'instagram', title: 'Follow on Instagram', href: 'https://www.instagram.com/astralcollectionz/' }
@@ -752,14 +755,29 @@ const HUB = {
     // WordPress mShots (free, no API key). First-ever request may show
     // a loading frame while the snapshot generates; it's cached after.
     // If it fails to load, the image removes itself — no broken frames.
-    if (link.preview){
+    if (link.previewImage || link.preview){
       art.classList.add('has-shot');
       const shot = document.createElement('span');
       shot.className = 'venture-shot';
       const img = document.createElement('img');
       img.loading = 'lazy';
       img.alt = 'Preview of ' + link.title;
-      img.src = 'https://s0.wp.com/mshots/v1/' + encodeURIComponent(link.href) + '?w=800';
+
+      if (link.previewImage){
+        // Self-hosted image: reliable, never blocked or cached wrong.
+        img.src = link.previewImage;
+      } else {
+        // Third-party snapshot. Some sites block screenshot bots and return
+        // an error page; if that happens the image still "loads", so we also
+        // guard on suspiciously small/blank results below.
+        img.src = 'https://s0.wp.com/mshots/v1/' + encodeURIComponent(link.href) + '?w=800';
+        img.onload = () => {
+          // A returned error/placeholder frame is typically tiny or square-ish.
+          if (img.naturalWidth < 400 || img.naturalHeight < 150){
+            shot.remove(); art.classList.remove('has-shot');
+          }
+        };
+      }
       img.onerror = () => { shot.remove(); art.classList.remove('has-shot'); };
       shot.appendChild(img);
       art.appendChild(shot);
